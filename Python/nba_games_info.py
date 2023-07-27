@@ -10,8 +10,8 @@ game_finder = leaguegamefinder.LeagueGameFinder(season_nullable='2022-23')
 games = game_finder.get_data_frames()[0]
 
 # Separate games data for home and away teams
-home_games = games[games['MATCHUP'].str.contains('@')]
-away_games = games[~games['MATCHUP'].str.contains('@')]
+home_games = games[~games['MATCHUP'].str.contains('@')]
+away_games = games[games['MATCHUP'].str.contains('@')]
 
 # Merge home and away games on 'GAME_ID'
 games_combined = pd.merge(home_games, away_games, on='GAME_ID', suffixes=('_Home', '_Away'))
