@@ -3,55 +3,58 @@
 
 
 # JULY 27 THURSDAY 4:15PM - Milestone 3
-# This project/task breakdown
+#       This project/task breakdown
 
 
 
 # JULY 27 THURSDAY 10PM - Milestone 2 
-# TODO:
-# 1) RELATIONS - Create 2 relations that are decomposable
-# 2) NORMALIZATION - Normalize the 2 relations
-# 3) SQL DDL 
-# 4) Table with at least 5 tuples
+#       1) RELATIONS - Create 2 relations that are decomposable
+#       2) NORMALIZATION - Normalize the 2 relations
+#       3) SQL DDL 
+#       4) Table with at least 5 tuples
 
 
 
 
-# JULY 31 - Have GUI set up - CSS+HTML (w3schools)
+# JULY 28
+#       Have GUI set up - CSS+HTML (w3schools)
 
 
-# AUG 3 - HAVE GUI CONNECTED TO PHP
+# AUG 3
+#       HAVE GUI CONNECTED TO PHP
 
 
-# CHECKLIST FUNCTIONS FOR THE GUI
-#   - INSERT 
-#   - DELETE 
-#   - UPDATE 
-#   - SELECTION 
-#   - PROJECTION
-#   - JOIN
-#   - Aggregation with Group By
-#   - Aggregation with Having
-#   - Nested Aggregation with Group By
-#   - DIVISION
+#       CHECKLIST FUNCTIONS FOR THE GUI
+#           - INSERT 
+#           - DELETE 
+#           - UPDATE 
+#           - SELECTION 
+#           - PROJECTION
+#           - JOIN
+#           - Aggregation with Group By
+#           - Aggregation with Having
+#           - Nested Aggregation with Group By
+#           - DIVISION
 
 
-# AUG 7 - Functioning/running GUI
+# AUG 7
+#       Functioning/running GUI
 
 
 
 
 # AUG 9 WEDNESDAY 10PM - Milestone 4
-# 1) COVERPAGE
-# 2) SINGLE SQL script
-# 3) Project Description PDF
-#       - Short Description
-#       - Schema changes
-#       - List of SQL queries
-#       - Screenshots of GUI examples - 3 examples at least
+#       1) COVERPAGE
+#       2) SINGLE SQL script
+#       3) Project Description PDF
+#           - Short Description
+#           - Schema changes
+#           - List of SQL queries
+#           - Screenshots of GUI examples - 3 examples at least
 
 
-# AUG 10 - SIGN UP FOR A DEMO SLOT !
+# AUG 10
+#       - SIGN UP FOR A DEMO SLOT !
 
 
 # AUG 11 FRIDAY - MILESTONE 5 + 6
