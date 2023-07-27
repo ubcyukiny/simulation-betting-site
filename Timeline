@@ -24,7 +24,15 @@
 #       HAVE GUI CONNECTED TO PHP
 
 
-#       CHECKLIST FUNCTIONS FOR THE GUI
+# AUG 4
+#       GUI Pages
+#           - Login/Signup Page
+#           - Main User Page
+#           - Create Bet page
+#           - Admin page (close bets, make payments)
+
+
+#       CHECKLIST FUNCTIONS FOR THE GUI - rubric
 #           - INSERT 
 #           - DELETE 
 #           - UPDATE 
