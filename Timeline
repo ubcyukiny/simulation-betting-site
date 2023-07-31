@@ -1,73 +1,40 @@
-/* BY TONIGHT 
-# Andrew make 1 commit
+August 1
+    Have GUI set up - CSS+HTML (using w3schools or other resources)
+    Create the following GUI pages:
+    Login/Signup Page
+    General User Page
+    Admin Page (to close bets and make payments)
+    Have a runnable sql script to create all the tables and data for User, Admin, Bet, Game, Team, and Player entities, set up Oracle database
 
+August 2-6
+    Implement functionalities using PHP scripts for:
+    INSERT: Creating an account or creating a bet
+    DELETE: Deleting a user or deleting a bet, a player or team
+    UPDATE: Closing a bet, updating bet status, bettors’ account balance or user updating emails
+    SELECTION: Add filters when viewing player or team stats for eg (show players on x team, scores more than 15 ppg)
+    PROJECTION: Add button that allows users to choose and focus any attributes, like show TeamFullName and TeamID only
+    JOIN: Join User and Bet tables to see all user actions
+    Aggregation with GROUP BY: tbd
+    Aggregation with HAVING: tbd
+    Nested Aggregation with GROUP BY: tbd
+    DIVISION: Find users who placed on every available bet
 
-# JULY 27 THURSDAY 4:15PM - Milestone 3
-#       This project/task breakdown
+August 7
+    Test all functionalities and debug any issues
 
+August 9
+    Complete the following deliverables for Milestone 4:
+    Cover page for the project report
+    A single SQL script that includes all table creations and data insertion queries
+    Project description PDF containing:
+    Short description of the web app and its functionalities
+    Schema changes and database design details
+    List of SQL queries used in the project.
+    Screenshots of at least 3 GUI examples
+    Signup for demo spot and test run the demo
 
+August 11
+    Demo (Milestone 5)
+    Complete the peer review on Canvas (Milestone 6)
 
-# JULY 27 THURSDAY 10PM - Milestone 2 
-#       1) RELATIONS - Create 2 relations that are decomposable
-#       2) NORMALIZATION - Normalize the 2 relations
-#       3) SQL DDL 
-#       4) Table with at least 5 tuples
-
-
-
-
-# JULY 28
-#       Have GUI set up - CSS+HTML (w3schools)
-#       Have the GUI pages set up
-
-
-# AUG 3
-#       Have most functionalities set up
-
-
-# AUG 4-6 - refine/debugging
-#       GUI Pages
-#           - Login/Signup Page
-#           - Main User Page
-#           - Create Bet page
-#           - Admin page (close bets, make payments)
-
-
-#       CHECKLIST FUNCTIONS FOR THE GUI - rubric
-#           - INSERT 
-#           - DELETE 
-#           - UPDATE 
-#           - SELECTION 
-#           - PROJECTION
-#           - JOIN
-#           - Aggregation with Group By
-#           - Aggregation with Having
-#           - Nested Aggregation with Group By
-#           - DIVISION
-
-# AUG 6 - SCHEDULE MEET WITH JASON 
-
-
-# AUG 7
-#       Functioning/running GUI
-
-
-
-# AUG 9 WEDNESDAY 10PM - Milestone 4
-#       1) COVERPAGE
-#       2) SINGLE SQL script
-#       3) Project Description PDF
-#           - Short Description
-#           - Schema changes
-#           - List of SQL queries
-#           - Screenshots of GUI examples - 3 examples at least
-
-
-# AUG 10
-#       - SIGN UP FOR A DEMO SLOT !
-
-
-# AUG 11 FRIDAY - MILESTONE 5 + 6
-#       - Demo to TA
-#       - Peer Review on Canvas
 
