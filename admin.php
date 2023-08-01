@@ -13,6 +13,18 @@
 <h1>Lists of current Bets(TODO)</h1>
 <p><input type="submit" value="Display" name="DisplayCurrBets"></p>
 <hr/>
+<form action="generalUser.php" method="post">
+    <!--   popup if user not found -->
+    <!--   add login logic -->
+    <!--   should log in with correct accountBalance, email-->
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="LoginUsername" placeholder="Enter your username">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="LoginEmail" placeholder="Enter your email">
+
+    <input type="submit" value="Submit">
+</form>
 <h1>Lists of users placing on Bets(TODO)</h1>
 <p><input type="submit" value="Display" name="DisplayUserPlaceBets"></p>
 <hr/>
