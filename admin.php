@@ -13,10 +13,6 @@
 <h1>Lists of current Bets(TODO)</h1>
 <p><input type="submit" value="Display" name="DisplayCurrBets"></p>
 <hr/>
-<form method="GET" action="admin.php"> <!--refresh page when submitted-->
-    <input type="hidden" id="DisplayCurrUsersRequest" name="DisplayCurrUsersRequest">
-    <input type="submit" value="Display" name="DisplayCurrUsers">
-</form>
 <h1>Lists of users placing on Bets(TODO)</h1>
 <p><input type="submit" value="Display" name="DisplayUserPlaceBets"></p>
 <hr/>
