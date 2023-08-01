@@ -121,7 +121,7 @@ CREATE TABLE Spread (
 	ScoreDifference FLOAT,
 	Odds FLOAT,
 	FOREIGN KEY (GameID) REFERENCES Game (GameID),
-	FOREIGN KEY (UserName) REFERENCES Admin(UserName)
+	FOREIGN KEY (UserName) REFERENCES GeneralUser(UserName)
 );
 
 CREATE TABLE OverUnder (
@@ -134,7 +134,7 @@ CREATE TABLE OverUnder (
 	TotalScore INT,
 	Odds FLOAT,
 	FOREIGN KEY (GameID) REFERENCES Game (GameID),
-	FOREIGN KEY (UserName) REFERENCES Admin(UserName)
+	FOREIGN KEY (UserName) REFERENCES GeneralUser(UserName)
 );
 
 CREATE TABLE MoneyLine (
@@ -146,6 +146,6 @@ CREATE TABLE MoneyLine (
 	TotalVig INT,
 	Odds FLOAT,
 	FOREIGN KEY (GameID) REFERENCES Game (GameID),
-	FOREIGN KEY (UserName) REFERENCES Admin(UserName)
+	FOREIGN KEY (UserName) REFERENCES GeneralUser(UserName)
 );
 
