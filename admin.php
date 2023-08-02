@@ -4,7 +4,7 @@
 </head>
 <body>
 <h1>This is the admin page</h1>
-<h1>Lists of current users(Working?)</h1>
+<h1>Lists of current users(Working)</h1>
 <form method="GET" action="admin.php"> <!--refresh page when submitted-->
     <input type="hidden" id="DisplayCurrUsersRequest" name="DisplayCurrUsersRequest">
     <input type="submit" value="Display" name="DisplayCurrUsers">
@@ -16,7 +16,19 @@
 <h1>Lists of users placing on Bets(TODO)</h1>
 <p><input type="submit" value="Display" name="DisplayUserPlaceBets"></p>
 <hr/>
-<h1>Delete users here(TODO)</h1>
+<h1>Update user email/accountBalance(Working)</h1>
+<form action="admin.php" method="post">
+    <input type="hidden" id="updateUserRequest" name="updateUserRequest">
+    <label for="usernameToUpdate">UserName to make Changes:</label>
+    <input type="text" id="usernameToUpdate" name="usernameToUpdate" placeholder="userName">
+    <label for="attributeToChange">Enter attribute to Change:</label>
+    <input type="text" id="attributeToChange" name="attributeToChange" placeholder="Enter Email/AccountBalance">
+    <label for="newValue">Enter new value</label>
+    <input type="text" id="newValue" name="newValue" placeholder="newValue">
+    <input type="submit" value="Submit" name="UpdateUser">
+</form>
+<hr/>
+<h1>Delete users here, on cascade, show user created bet also deleted(TODO)</h1>
 
 <form action="admin.php" method="post">
     <!--    should on cascade delete-->
@@ -54,25 +66,6 @@ function executePlainSQL($cmdstr)
     return $statement;
 }
 
-function printResult($result)
-{ //prints results from a select statement
-    echo "<br>Retrieved data from table demoTable:<br>";
-    echo "<table>";
-    echo "<tr><th>UserName</th><th>AccountBalance</th><th>Email</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>";
-    }
-    echo "</table>";
-}
-
-function displayUsers()
-{
-    if (connectToDB()) {
-        printResult(executePlainSQL("SELECT * FROM GeneralUser"));
-        disconnectFromDB();
-    }
-}
-
 function connectToDB()
 {
     global $db_conn;
@@ -95,8 +88,54 @@ function disconnectFromDB()
     oci_close($db_conn);
 }
 
+function printResult($result)
+{ //prints results from a select statement
+    echo "<br>Retrieved data from table demoTable:<br>";
+    echo "<table>";
+    echo "<tr><th>UserName</th><th>AccountBalance</th><th>Email</th></tr>";
+    while ($row = oci_fetch_array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>";
+    }
+    echo "</table>";
+}
+
+function displayUsers()
+{
+    if (connectToDB()) {
+        printResult(executePlainSQL("SELECT * FROM GeneralUser"));
+        disconnectFromDB();
+    }
+}
+
+function handleUpdateUserRequest()
+{
+    global $db_conn;
+    $userName = $_POST['usernameToUpdate'];
+    $attributeToChange = $_POST['attributeToChange'];
+    $newValue = $_POST['newValue'];
+    if (connectToDB()) {
+        if (strcasecmp($attributeToChange, 'email') == 0) {
+            if (filter_var($newValue, FILTER_VALIDATE_EMAIL)) {
+                executePlainSQL("UPDATE GeneralUser SET email='" . $newValue . "' WHERE username='" . $userName . "'");
+            } else {
+                echo "new email is not a valid email format";
+            }
+        } elseif (strcasecmp($attributeToChange, 'accountBalance') == 0) {
+            executePlainSQL("UPDATE GeneralUser SET accountBalance=" . $newValue . " WHERE username='" . $userName . "'");
+        } else {
+            echo "Attribute does not exists, please try with email or accountBalance";
+        }
+    }
+    oci_commit($db_conn);
+}
+
+
 if (isset($_GET['DisplayCurrUsersRequest'])) {
     displayUsers();
+}
+
+if (isset($_POST['UpdateUser']) && array_key_exists('updateUserRequest', $_POST)) {
+    handleUpdateUserRequest();
 }
 
 ?>
