@@ -88,13 +88,13 @@ function disconnectFromDB()
     oci_close($db_conn);
 }
 
-function printResult($result)
+function printUsers($result)
 { //prints results from a select statement
-    echo "<br>Retrieved data from table demoTable:<br>";
+    echo "<br>Retrieved data from table generalUsers:<br>";
     echo "<table>";
     echo "<tr><th>UserName</th><th>AccountBalance</th><th>Email</th></tr>";
     while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>";
+        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['ACCOUNTBALANCE'] . "</td><td>" . $row['EMAIL'] . "</td></tr>";
     }
     echo "</table>";
 }
@@ -102,7 +102,7 @@ function printResult($result)
 function displayUsers()
 {
     if (connectToDB()) {
-        printResult(executePlainSQL("SELECT * FROM GeneralUser"));
+        printUsers(executePlainSQL("SELECT * FROM GeneralUser"));
         disconnectFromDB();
     }
 }
@@ -117,11 +117,13 @@ function handleUpdateUserRequest()
         if (strcasecmp($attributeToChange, 'email') == 0) {
             if (filter_var($newValue, FILTER_VALIDATE_EMAIL)) {
                 executePlainSQL("UPDATE GeneralUser SET email='" . $newValue . "' WHERE username='" . $userName . "'");
+                echo "Update success!";
             } else {
                 echo "new email is not a valid email format";
             }
         } elseif (strcasecmp($attributeToChange, 'accountBalance') == 0) {
             executePlainSQL("UPDATE GeneralUser SET accountBalance=" . $newValue . " WHERE username='" . $userName . "'");
+            echo "Update success!";
         } else {
             echo "Attribute does not exists, please try with email or accountBalance";
         }

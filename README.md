@@ -12,9 +12,9 @@
 - **Delete Operation:** On cascade delete, admin can delete users; bets created by that user should be deleted as well
 - **Selection:** Add filters when viewing player or team stats (e.g., show players on x team, scores more than 15 ppg)
 - **Projection:** Add button that allows users to choose and focus any attributes, like showing TeamFullName and TeamID only
-- **Join:** Join User and Bet tables to see all user actions
+- **Join:** Join Team and Player tables
 - **Aggregation with GROUP BY:** tbd
 - **Aggregation with HAVING:** tbd
 - **Nested Aggregation with GROUP BY:** tbd
-- **DIVISION:** Find users who placed on every available bet
+- **DIVISION:** Find users who placed on every moneyLine bet
 

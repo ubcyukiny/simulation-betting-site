@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <html>
 <head>
     <title>Home Page</title>
@@ -15,18 +18,13 @@
     <input type="submit" value="Submit" name="CreateNewUser">
 </form>
 <hr/>
-<h1>Login here (TODO)</h1>
-<form action="generalUser.php" method="post">
-    <!--   popup if user not found -->
-    <!--   add login logic -->
-    <!--   should log in with correct accountBalance, email-->
+<h1>Login here</h1>
+<form action="" method="post">
     <label for="username">Username:</label>
     <input type="text" id="username" name="LoginUsername" placeholder="Enter your username">
-
     <label for="email">Email:</label>
     <input type="email" id="email" name="LoginEmail" placeholder="Enter your email">
-
-    <input type="submit" value="Submit">
+    <input type="submit" value="Submit" , name="Login">
 </form>
 <hr/>
 <h1>Click here to view as admin</h1>
@@ -39,6 +37,30 @@
 // global variables
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 $db_conn = NULL; // edit the login credentials in connectToDB()
+
+function executePlainSQL($cmdstr)
+{ //takes a plain (no bound variables) SQL command and executes it
+    global $db_conn, $success;
+    $statement = oci_parse($db_conn, $cmdstr);
+    //There are a set of comments at the end of the file that describe some of the OCI specific functions and how they work
+
+    if (!$statement) {
+        echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
+        $e = OCI_Error($db_conn); // For OCIParse errors pass the connection handle
+        echo htmlentities($e['message']);
+        $success = False;
+    }
+
+    $r = oci_execute($statement);
+    if (!$r) {
+        echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
+        $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
+        echo htmlentities($e['message']);
+        $success = False;
+    }
+
+    return $statement;
+}
 
 // executeBoundSQL, handle error
 function executeBoundSQL($cmdstr, $list)
@@ -72,10 +94,9 @@ See the sample code below for how this function is used */
             echo htmlentities($e['message']);
             echo "<br>";
             $success = False;
-        } else {
-            echo "SignUp Success!";
         }
     }
+    return $statement;
 }
 
 // function connectToDB()
@@ -102,26 +123,63 @@ function disconnectFromDB()
     oci_close($db_conn);
 }
 
-// function handleCreatNewUserRequest -> call executeBoundSql
 function handleCreateNewUserRequest()
 {
     global $db_conn;
     if (connectToDB()) {
-        $tuple = array (
-                ":bind1" => $_POST['SignUpUsername'],
-                ":bind2" => $_POST['SignUpEmail']
+        $tuple = array(
+            ":bind1" => $_POST['SignUpUsername'],
+            ":bind2" => $_POST['SignUpEmail']
         );
-        $alltuples = array ($tuple);
-        executeBoundSQL("insert into GeneralUser(UserName, Email) values(:bind1, :bind2)", $alltuples);
+        $allTuples = array($tuple);
+        executeBoundSQL("insert into GeneralUser(UserName, Email) values(:bind1, :bind2)", $allTuples);
         oci_commit($db_conn);
         disconnectFromDB();
+        echo "Account successfully created!";
+    }
+}
+
+function handleLogin()
+{
+    global $db_conn;
+    if (connectToDB()) {
+        // get userinputUsername and userinputEmail, wrap it in a array
+        $tuple = array(
+                ":bind1" => $_POST['LoginUsername'],
+                ":bind2" => $_POST['LoginEmail']
+        );
+        $allTuples = array($tuple);
+        $statement = executeBoundSQL("select 1 from GeneralUser where UserName = :bind1 and Email = :bind2", $allTuples);
+        $row = oci_fetch_assoc($statement);
+
+        if ($row) {
+            $userName = $_POST['LoginUsername'];
+            $_SESSION['userName'] = $userName;
+            $_SESSION['email'] = $_POST['LoginEmail'];
+            // get accountBalance
+            $stid = oci_parse($db_conn, "select accountBalance from GeneralUser where username ='" . $userName . "'" );
+            oci_execute($stid);
+            $result = oci_fetch_array($stid, OCI_BOTH);
+            print_r($result);
+            $_SESSION['accountBalance'] = $result['ACCOUNTBALANCE']; // accountbalance
+            disconnectFromDB();
+            header("Location: generalUser.php");
+            exit;
+        } else {
+            echo "Cannot find account with that username/email.";
+            disconnectFromDB();
+        }
     }
 }
 
 // if SignUp is pressed
 if (isset($_POST['CreateNewUser'])) {
     handleCreateNewUserRequest();
+}
 
+// if login is pressed
+if (isset($_POST['Login'])) {
+    handleLogin();
 }
 
 ?>
