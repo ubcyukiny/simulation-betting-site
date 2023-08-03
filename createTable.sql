@@ -137,14 +137,17 @@ CREATE TABLE OverUnder (
 	FOREIGN KEY (UserName) REFERENCES GeneralUser(UserName)
 );
 
+--  made changes here, betId references Bet
 CREATE TABLE MoneyLine (
 	BetID INT PRIMARY KEY,
 	GameID INT NOT NULL,
 	UserName VARCHAR(20) NOT NULL,
-	Status VARCHAR(40),
-	TotalPool INT,
-	TotalVig INT,
-	Odds FLOAT,
+	Status VARCHAR(40) NOT NULL,
+	HomeTeam VARCHAR(40) NOT NULL,
+	AwayTeam VARCHAR(40) NOT NULL,
+	HomeTeamOdds INT NOT NULL,
+	AwayTeamOdds INT NOT NULL,
+	FOREIGN KEY (BetID) REFERENCES Bet (BetID),
 	FOREIGN KEY (GameID) REFERENCES Game (GameID),
 	FOREIGN KEY (UserName) REFERENCES GeneralUser(UserName)
 );

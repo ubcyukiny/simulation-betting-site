@@ -9,21 +9,21 @@
 <h1>NBA Betting</h1>
 <p>Let's win some money!</p>
 <hr/>
-<h1>Sign up here (Working?)</h1>
+<h1>Sign up here</h1>
 <form action="" method="post">
     <label for="username">Username:</label>
-    <input type="text" id="newUsername" name="SignUpUsername" placeholder="Enter your username">
+    <input type="text" id="newUsername" name="SignUpUsername" placeholder="Enter your username" required>
     <label for="email">Email:</label>
-    <input type="email" id="newEmail" name="SignUpEmail" placeholder="Enter your email">
+    <input type="email" id="newEmail" name="SignUpEmail" placeholder="Enter your email" required>
     <input type="submit" value="Submit" name="CreateNewUser">
 </form>
 <hr/>
 <h1>Login here</h1>
 <form action="" method="post">
     <label for="username">Username:</label>
-    <input type="text" id="username" name="LoginUsername" placeholder="Enter your username">
+    <input type="text" id="username" name="LoginUsername" placeholder="Enter your username" required>
     <label for="email">Email:</label>
-    <input type="email" id="email" name="LoginEmail" placeholder="Enter your email">
+    <input type="email" id="email" name="LoginEmail" placeholder="Enter your email" required>
     <input type="submit" value="Submit" , name="Login">
 </form>
 <hr/>
@@ -135,7 +135,7 @@ function handleCreateNewUserRequest()
         executeBoundSQL("insert into GeneralUser(UserName, Email) values(:bind1, :bind2)", $allTuples);
         oci_commit($db_conn);
         disconnectFromDB();
-        echo "Account successfully created!";
+
     }
 }
 
@@ -160,7 +160,6 @@ function handleLogin()
             $stid = oci_parse($db_conn, "select accountBalance from GeneralUser where username ='" . $userName . "'" );
             oci_execute($stid);
             $result = oci_fetch_array($stid, OCI_BOTH);
-            print_r($result);
             $_SESSION['accountBalance'] = $result['ACCOUNTBALANCE']; // accountbalance
             disconnectFromDB();
             header("Location: generalUser.php");
