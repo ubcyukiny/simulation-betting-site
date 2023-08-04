@@ -4,19 +4,23 @@
 </head>
 <body>
 <h1>This is the admin page</h1>
-<h1>Lists of current users(Working)</h1>
+<h1>Lists of current users</h1>
 <form method="GET" action="admin.php"> <!--refresh page when submitted-->
     <input type="hidden" id="DisplayCurrUsersRequest" name="DisplayCurrUsersRequest">
     <input type="submit" value="Display" name="DisplayCurrUsers">
 </form>
 <hr/>
-<h1>Lists of current Bets(TODO)</h1>
-<p><input type="submit" value="Display" name="DisplayCurrBets"></p>
+<h1>Lists of current Bets</h1>
+<form action="admin.php" method="GET">
+    <p><input type="submit" value="Display" name="DisplayCurrBets"></p>
+</form>
 <hr/>
-<h1>Lists of users placing on Bets(TODO)</h1>
-<p><input type="submit" value="Display" name="DisplayUserPlaceBets"></p>
+<h1>Transaction list of users placing on Bets</h1>
+<form action="admin.php" method="GET">
+    <p><input type="submit" value="Display" name="DisplayUserPlacesBet"></p>
+</form>
 <hr/>
-<h1>Update user email/accountBalance(Working)</h1>
+<h1>Update user email/accountBalance</h1>
 <form action="admin.php" method="post">
     <input type="hidden" id="updateUserRequest" name="updateUserRequest">
     <label for="usernameToUpdate">UserName to make Changes:</label>
@@ -29,14 +33,18 @@
 </form>
 <hr/>
 <h1>Delete users here, on cascade, show user created bet also deleted(TODO)</h1>
-
 <form action="admin.php" method="post">
     <!--    should on cascade delete-->
     <label for="username">UserName to Delete:</label>
     <input type="text" id="username" name="username" placeholder="userName here">
     <input type="submit" value="Submit">
 </form>
-
+<hr/>
+<h1>Division Operation: Find list of users that placed on every bet</h1>
+<form action="admin.php" method="GET">
+    <p><input type="submit" value="Display" name="DisplayDivision"></p>
+</form>
+<hr/>
 <?php
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 $db_conn = NULL; // edit the login credentials in connectToDB()
@@ -89,7 +97,7 @@ function disconnectFromDB()
 }
 
 function printUsers($result)
-{ //prints results from a select statement
+{
     echo "<br>Retrieved data from table generalUsers:<br>";
     echo "<table>";
     echo "<tr><th>UserName</th><th>AccountBalance</th><th>Email</th></tr>";
@@ -131,6 +139,54 @@ function handleUpdateUserRequest()
     oci_commit($db_conn);
 }
 
+function printUserPlacesBet($result)
+{
+    echo "<br>Retrieved data from table UserPlacesBet:<br>";
+    echo "<table>";
+    echo "<tr><th>UserName</th><th>BetID</th><th>BetAmount</th><th>Prediction</th><th>CalculatedOdds</th></tr>";
+    while ($row = oci_fetch_array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['BETID'] . "</td><td>" . $row['BETAMOUNT'] . "</td>
+        <td>" . $row['PREDICTION'] . "</td><td>" . $row['CALCULATEDODDS'] . "</td></tr>";
+    }
+    echo "</table>";
+}
+
+function printBets($result)
+{
+    echo "<br>Retrieved data from table Bet:<br>";
+    echo "<table>";
+    echo "<tr><th>BetID</th><th>BetType</th></tr>";
+    while ($row = oci_fetch_array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['BETTYPE'] . "</td></tr>";
+    }
+    echo "</table>";
+}
+
+function displayUserPlacesBet()
+{
+    if (connectToDB()) {
+        printUserPlacesBet(executePlainSQL("SELECT * FROM UserPlacesBet"));
+        disconnectFromDB();
+    }
+}
+
+
+function displayDivision()
+{
+    if (connectToDB()) {
+        $result = executePlainSQL("select * from GeneralUser g where not exists (select b.betID from Bet b where not exists (select usp.betID from UserPlacesBet usp where usp.betID = b.betID and usp.userName = g.userName))");
+        printUsers($result);
+        disconnectFromDB();
+    }
+}
+
+function displayBets()
+{
+    if (connectToDB()) {
+        printBets(executePlainSQL("SELECT * FROM Bet"));
+        disconnectFromDB();
+    }
+}
 
 if (isset($_GET['DisplayCurrUsersRequest'])) {
     displayUsers();
@@ -138,6 +194,18 @@ if (isset($_GET['DisplayCurrUsersRequest'])) {
 
 if (isset($_POST['UpdateUser']) && array_key_exists('updateUserRequest', $_POST)) {
     handleUpdateUserRequest();
+}
+
+if (isset($_GET['DisplayUserPlacesBet'])) {
+    displayUserPlacesBet();
+}
+
+if (isset($_GET['DisplayDivision'])) {
+    displayDivision();
+}
+
+if (isset($_GET['DisplayCurrBets'])) {
+    displayBets();
 }
 
 ?>

@@ -7,6 +7,7 @@
 ### Working:
 - **Insert Operation:** User can sign up new accounts, admin can view a list of users including newly signed up ones
 - **Update Operation:** Admin can update user email/accountBalance
+- **Division:** Find users who placed on every bet
 
 ### TODO:
 - **Delete Operation:** On cascade delete, admin can delete users; bets created by that user should be deleted as well
@@ -16,5 +17,5 @@
 - **Aggregation with GROUP BY:** tbd
 - **Aggregation with HAVING:** tbd
 - **Nested Aggregation with GROUP BY:** tbd
-- **DIVISION:** Find users who placed on every moneyLine bet
+
 

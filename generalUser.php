@@ -25,12 +25,33 @@ if (isset($_SESSION['userName'])) {
 <hr/>
 <form method="GET" action="generalUser.php"> <!--refresh page when submitted-->
     <h1>Display games (for createBet)</h1>
-    <p><input type="submit" value="Display" name="DisplayGames"></p>
+    <p><input type="submit" value="Display Games" name="DisplayGames"></p>
 </form>
 <hr/>
 <h1>Display current moneyline bets:</h1>
 <form action="generalUser.php" method="get">
-    <p><input type="submit" value="Display" name="DisplayAvailableBets"></p>
+    <p><input type="submit" value="Display MoneyLine bets" name="DisplayAvailableBets"></p>
+</form>
+<hr/>
+<h1>Place your bet here:</h1>
+(normally it would check if userBalance is enough for betAmount, then update user's accountBalance, ignore for demo)<br>
+(also normally it would also get CalculatedOdds based on your prediction and Bet, and insert to
+PotentialPayout table, but
+ignore for demo)<br>
+(Also we prob want a dropdown for user to select Home/Away for prediction)<br>
+<form action="generalUser.php" method="post">
+    <label for="betId">Bet ID:</label>
+    <input type="number" id="betId" name="BetID" required><br>
+
+    <label for="gameId">BetAmount</label>
+    <input type="number" id="betAmount" name="BetAmount" required><br>
+
+    <label for="prediction">Prediction: (Home/Away)</label>
+    <input type="text" id="prediction" name="Prediction" maxlength="100" required><br>
+
+    <label for="calculatedOdds">Away Team:</label>
+    <input type="number" id="calculatedOdds" name="CalculatedOdds" required><br>
+    <p><input type="submit" value="Place bet" name="PlaceBet"></p>
 </form>
 <hr/>
 <h1>Create your bet here:</h1>
@@ -180,7 +201,7 @@ function printMoneyLineBets($result)
 {
     echo "<br>Retrieved data from table MoneyLine:<br>";
     echo "<table>";
-    echo "<tr><th>BetID</th><th>GameID</th><th>UserName</th><th>Status</th><th>HomeTeam</th><th>AwayTeam</th><th>HomeTeamOdds</th><th>AwayTeamOdds</th></tr>";
+    echo "<tr><th>BetID</th><th>GameID</th><th>UserName (Created by)</th><th>Status</th><th>HomeTeam</th><th>AwayTeam</th><th>HomeTeamOdds</th><th>AwayTeamOdds</th></tr>";
     while ($row = oci_fetch_array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['GAMEID'] . "</td><td>" . $row['USERNAME'] . "</td>
         <td>" . $row['STATUS'] . "</td><td>" . $row['HOMETEAM'] . "</td><td>" . $row['AWAYTEAM'] . "</td><td>"
@@ -193,23 +214,17 @@ function printMoneyLineBets($result)
 function handleCreateMoneyLineBetRequest()
 {
     global $db_conn;
-    print_r($_POST);
-    print_r($_SESSION);
     if (connectToDB()) {
         // insert to bet table and moneyline table
         // For Bet table
-        // set tuple array
         $tuple2 = array(
             ":bbind1" => $_POST['BetID'],
             ":bbind2" => 'MoneyLine'
         );
-        // set allTuples array
         $allTuples2 = array($tuple2);
         executeBoundSQL("insert into Bet(BetID, BetType) values(:bbind1, :bbind2)", $allTuples2);
 
-
         // For MoneyLine table
-        // set tuple array
         $tuple = array(
             ":bind1" => $_POST['BetID'],
             ":bind2" => $_POST['GameID'],
@@ -219,12 +234,29 @@ function handleCreateMoneyLineBetRequest()
             ":bind6" => $_POST['HomeTeamOdds'],
             ":bind7" => $_POST['AwayTeamOdds'],
         );
-        // set allTuples array
         $allTuples = array($tuple);
         executeBoundSQL("insert into MoneyLine(BetID,GameID,UserName,HomeTeam,AwayTeam,HomeTeamOdds,AwayTeamOdds)
          values(:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $allTuples);
         oci_commit($db_conn);
         disconnectfromDB();
+    }
+}
+
+function handlePlaceBetRequest()
+{
+    global $db_conn;
+    if (connectToDB()) {
+        $tuple = array(
+            ":bind1" => $_SESSION['userName'],
+            ":bind2" => $_POST['BetID'],
+            ":bind3" => $_POST['BetAmount'],
+            ":bind4" => $_POST['Prediction'],
+            ":bind5" => $_POST['CalculatedOdds']
+        );
+        $allTuples = array($tuple);
+        executeBoundSQL("insert into UserPlacesBet(UserName, BetID, BetAmount, Prediction, CalculatedOdds) values(:bind1, :bind2, :bind3, :bind4, :bind5)", $allTuples);
+        oci_commit($db_conn);
+        disconnectFromDB();
     }
 }
 
@@ -250,6 +282,9 @@ if (isset($_GET['DisplayAvailableBets'])) {
     displayMoneyLineBets();
 }
 
+if (isset($_POST['PlaceBet'])) {
+    handlePlaceBetRequest();
+}
 ?>
 
 
