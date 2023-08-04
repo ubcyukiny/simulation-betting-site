@@ -46,55 +46,8 @@
 </form>
 <hr/>
 <?php
-$success = True; //keep track of errors so it redirects the page only if there are no errors
-$db_conn = NULL; // edit the login credentials in connectToDB()
 
-
-function executePlainSQL($cmdstr)
-{ //takes a plain (no bound variables) SQL command and executes it
-    global $db_conn, $success;
-    $statement = oci_parse($db_conn, $cmdstr);
-    //There are a set of comments at the end of the file that describe some of the OCI specific functions and how they work
-
-    if (!$statement) {
-        echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
-        $e = OCI_Error($db_conn); // For OCIParse errors pass the connection handle
-        echo htmlentities($e['message']);
-        $success = False;
-    }
-
-    $r = oci_execute($statement);
-    if (!$r) {
-        echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
-        $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-        echo htmlentities($e['message']);
-        $success = False;
-    }
-
-    return $statement;
-}
-
-function connectToDB()
-{
-    global $db_conn;
-    // Your username is ora_(CWL_ID) and the password is a(student number). For example,
-    // ora_platypus is the username and a12345678 is the password.
-    $db_conn = oci_connect("ora_yukiny", "a13215942", "dbhost.students.cs.ubc.ca:1522/stu");
-
-    if ($db_conn) {
-        return true;
-    } else {
-        $e = OCI_Error(); // For OCILogon errors pass no handle
-        echo htmlentities($e['message']);
-        return false;
-    }
-}
-
-function disconnectFromDB()
-{
-    global $db_conn;
-    oci_close($db_conn);
-}
+include 'functions.php';
 
 function printUsers($result)
 {
@@ -117,7 +70,7 @@ function displayUsers()
 
 function handleUpdateUserRequest()
 {
-    global $db_conn;
+    global $global_db_conn;
     $userName = $_POST['usernameToUpdate'];
     $attributeToChange = $_POST['attributeToChange'];
     $newValue = $_POST['newValue'];
@@ -136,7 +89,7 @@ function handleUpdateUserRequest()
             echo "Attribute does not exists, please try with email or accountBalance";
         }
     }
-    oci_commit($db_conn);
+    oci_commit($global_db_conn);
 }
 
 function printUserPlacesBet($result)
