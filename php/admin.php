@@ -5,43 +5,43 @@
 <body>
 <h1>This is the admin page</h1>
 <h1>Lists of current users</h1>
-<form method="GET" action="admin.php"> <!--refresh page when submitted-->
+<form method="GET" action="project_a2o8f_d0o7w_o9j3b/php/admin.php"> <!--refresh page when submitted-->
     <input type="hidden" id="DisplayCurrUsersRequest" name="DisplayCurrUsersRequest">
     <input type="submit" value="Display" name="DisplayCurrUsers">
 </form>
 <hr/>
 <h1>Lists of current Bets</h1>
-<form action="admin.php" method="GET">
+<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayCurrBets"></p>
 </form>
 <hr/>
 <h1>Transaction list of users placing on Bets</h1>
-<form action="admin.php" method="GET">
+<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayUserPlacesBet"></p>
 </form>
 <hr/>
 <h1>Update user email/accountBalance</h1>
-<form action="admin.php" method="post">
+<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="post">
     <input type="hidden" id="updateUserRequest" name="updateUserRequest">
-    <label for="usernameToUpdate">UserName to make Changes:</label>
+    <label for="usernameToUpdate">Username of user to update:</label>
     <input type="text" id="usernameToUpdate" name="usernameToUpdate" placeholder="userName">
     <label for="attributeToChange">Enter attribute to Change:</label>
     <input type="text" id="attributeToChange" name="attributeToChange" placeholder="Enter Email/AccountBalance">
     <label for="newValue">Enter new value</label>
     <input type="text" id="newValue" name="newValue" placeholder="newValue">
-    <input type="submit" value="Submit" name="UpdateUser">
+    <input type="submit" value="Update User" name="UpdateUser">
 </form>
 <hr/>
-<h1>Delete users here, on cascade, show user created bet also deleted(TODO)</h1>
-<form action="admin.php" method="post">
+<h1>Delete users and bets created by that user, any placement of that bet will be deleted as well </h1>
+<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="post">
     <!--    should on cascade delete-->
     <label for="username">UserName to Delete:</label>
-    <input type="text" id="username" name="username" placeholder="userName here">
-    <input type="submit" value="Submit">
+    <input type="text" id="usernameToDelete" name="UsernameToDelete">
+    <input type="submit" value="Delete User" name="DeleteUser">
 </form>
 <hr/>
 <h1>Division Operation: Find list of users that placed on every bet</h1>
-<form action="admin.php" method="GET">
+<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayDivision"></p>
 </form>
 <hr/>
@@ -68,6 +68,7 @@ function displayUsers()
     }
 }
 
+
 function handleUpdateUserRequest()
 {
     global $global_db_conn;
@@ -78,7 +79,6 @@ function handleUpdateUserRequest()
         if (strcasecmp($attributeToChange, 'email') == 0) {
             if (filter_var($newValue, FILTER_VALIDATE_EMAIL)) {
                 executePlainSQL("UPDATE GeneralUser SET email='" . $newValue . "' WHERE username='" . $userName . "'");
-                echo "Update success!";
             } else {
                 echo "new email is not a valid email format";
             }
@@ -91,6 +91,22 @@ function handleUpdateUserRequest()
     }
     oci_commit($global_db_conn);
 }
+
+function handleDeleteUserRequest ()
+{
+    global $global_db_conn;
+    if (connectToDB()) {
+        $tuple = array(
+            ":bind1" => $_POST['UsernameToDelete']
+        );
+        $allTuples = array($tuple);
+        executeBoundSQL("delete from GeneralUser where UserName=:bind1", $allTuples);
+        oci_commit($global_db_conn);
+        disconnectFromDB();
+    }
+
+}
+
 
 function printUserPlacesBet($result)
 {
@@ -108,9 +124,9 @@ function printBets($result)
 {
     echo "<br>Retrieved data from table Bet:<br>";
     echo "<table>";
-    echo "<tr><th>BetID</th><th>BetType</th></tr>";
+    echo "<tr><th>BetID</th><th>BetType</th><th>UserName (Created By)</th></tr>";
     while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['BETTYPE'] . "</td></tr>";
+        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['BETTYPE'] . "</td><td>" . $row['USERNAME'] ."</td></tr>";
     }
     echo "</table>";
 }
@@ -159,6 +175,10 @@ if (isset($_GET['DisplayDivision'])) {
 
 if (isset($_GET['DisplayCurrBets'])) {
     displayBets();
+}
+
+if (isset($_POST['DeleteUser'])) {
+    handleDeleteUserRequest();
 }
 
 ?>

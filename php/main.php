@@ -29,7 +29,7 @@
 </form>
 <hr/>
 <h1>Click here to view as admin</h1>
-<form action="admin.php" method="post">
+<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php2o8f_d0o7w_o9j3b/php/admin.php" method="post">
     <input type="submit" value="LoginAsAdmin">
 </form>
 
