@@ -11,7 +11,11 @@
 <p>Let's win some money!</p>
 <hr/>
 <h1>Sign up here</h1>
-<form action="" method="post">
+<form action="signup.php" method="post">
+    <input type="submit" value="Click Here">
+</form>
+<hr/>
+<form action= "" method="post">
     <label for="username">Username:</label>
     <input type="text" id="newUsername" name="SignUpUsername" placeholder="Enter your username" required>
     <label for="email">Email:</label>
