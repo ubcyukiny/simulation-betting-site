@@ -13,7 +13,7 @@ if (isset($_SESSION['userName'])) {
 } else {
     echo "Please log in.";
     // display link to main.php
-    echo '<a href="project_a2o8f_d0o7w_o9j3b/php/main.phpa2o8f_d0o7w_o9j3b/php/main.php">Back to Login Page</a>';
+    echo '<a href="main.php">Back to Login Page</a>';
     echo "<br>";
 }
 ?>
@@ -24,13 +24,13 @@ if (isset($_SESSION['userName'])) {
 </head>
 <body>
 <hr/>
-<form method="GET" action="project_a2o8f_d0o7w_o9j3b/php/generalUser.php"> <!--refresh page when submitted-->
+<form method="GET" action="generalUser.php"> <!--refresh page when submitted-->
     <h1>Display games (for createBet)</h1>
     <p><input type="submit" value="Display Games" name="DisplayGames"></p>
 </form>
 <hr/>
 <h1>Display current moneyline bets:</h1>
-<form action="project_a2o8f_d0o7w_o9j3b/php/generalUser.php" method="get">
+<form action="generalUser.php" method="get">
     <p><input type="submit" value="Display MoneyLine bets" name="DisplayAvailableBets"></p>
 </form>
 <hr/>
@@ -40,7 +40,7 @@ if (isset($_SESSION['userName'])) {
 PotentialPayout table, but
 ignore for demo)<br>
 (Also we prob want a dropdown for user to select Home/Away for prediction)<br>
-<form action="project_a2o8f_d0o7w_o9j3b/php/generalUser.php" method="post">
+<form action="generalUser.php" method="post">
     <label for="betId">Bet ID:</label>
     <input type="number" id="betId" name="BetID" required><br>
 
@@ -59,7 +59,7 @@ ignore for demo)<br>
 <h1>Form for MoneyLine Bet</h1>
 Ideally, user only provides gameId and php get homeTeam and awayTeam from Game and Team table, for demo, require user to
 input
-<form action="project_a2o8f_d0o7w_o9j3b/php/generalUser.php" method="post">
+<form action="generalUser.php" method="post">
     <label for="betId">Bet ID:</label>
     <input type="number" id="betId" name="BetID" required><br>
 

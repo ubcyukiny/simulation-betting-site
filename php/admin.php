@@ -5,23 +5,23 @@
 <body>
 <h1>This is the admin page</h1>
 <h1>Lists of current users</h1>
-<form method="GET" action="project_a2o8f_d0o7w_o9j3b/php/admin.php"> <!--refresh page when submitted-->
+<form method="GET" action="admin.php"> <!--refresh page when submitted-->
     <input type="hidden" id="DisplayCurrUsersRequest" name="DisplayCurrUsersRequest">
     <input type="submit" value="Display" name="DisplayCurrUsers">
 </form>
 <hr/>
 <h1>Lists of current Bets</h1>
-<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="GET">
+<form action="admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayCurrBets"></p>
 </form>
 <hr/>
 <h1>Transaction list of users placing on Bets</h1>
-<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="GET">
+<form action="admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayUserPlacesBet"></p>
 </form>
 <hr/>
 <h1>Update user email/accountBalance</h1>
-<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="post">
+<form action="admin.php" method="post">
     <input type="hidden" id="updateUserRequest" name="updateUserRequest">
     <label for="usernameToUpdate">Username of user to update:</label>
     <input type="text" id="usernameToUpdate" name="usernameToUpdate" placeholder="userName">
@@ -33,7 +33,7 @@
 </form>
 <hr/>
 <h1>Delete users and bets created by that user, any placement of that bet will be deleted as well </h1>
-<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="post">
+<form action="admin.php" method="post">
     <!--    should on cascade delete-->
     <label for="username">UserName to Delete:</label>
     <input type="text" id="usernameToDelete" name="UsernameToDelete">
@@ -41,7 +41,7 @@
 </form>
 <hr/>
 <h1>Division Operation: Find list of users that placed on every bet</h1>
-<form action="project_a2o8f_d0o7w_o9j3b/php/admin.php" method="GET">
+<form action="admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayDivision"></p>
 </form>
 <hr/>
