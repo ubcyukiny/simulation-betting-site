@@ -65,6 +65,24 @@ See the sample code below for how this function is used */
     return $statement;
 }
 
+function connectToDB()
+{
+    global $global_db_conn;
+    // Your username is ora_(CWL_ID) and the password is a(student number). For example,
+    // ora_platypus is the username and a12345678 is the password.
+
+    //$global_db_conn = oci_connect("ora_black", "password", "dbhost.students.cs.ubc.ca:1522/stu");
+    $global_db_conn = get_db_conn();
+
+    if ($global_db_conn) {
+        return true;
+    } else {
+        $e = OCI_Error(); // For OCILogon errors pass no handle
+        echo htmlentities($e['message']);
+        return false;
+    }
+}
+
 function disconnectFromDB()
 {
     global $global_db_conn;
