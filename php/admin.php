@@ -40,11 +40,19 @@
     <input type="submit" value="Delete User" name="DeleteUser">
 </form>
 <hr/>
+<h1>Join: Find name and accountBalance of all users who placed on a specific bet</h1>
+<form action="admin.php" method="GET">
+    <label for="betID">BetID:</label>
+    <input type="number" id="betID" name="BetID" required>
+    <p><input type="submit" value="Display" name="DisplayJoin"></p>
+</form>
+<hr/>
 <h1>Division Operation: Find list of users that placed on every bet</h1>
 <form action="admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayDivision"></p>
 </form>
 <hr/>
+
 <?php
 
 include 'functions.php';
@@ -92,7 +100,7 @@ function handleUpdateUserRequest()
     oci_commit($global_db_conn);
 }
 
-function handleDeleteUserRequest ()
+function handleDeleteUserRequest()
 {
     global $global_db_conn;
     if (connectToDB()) {
@@ -105,6 +113,29 @@ function handleDeleteUserRequest ()
         disconnectFromDB();
     }
 
+}
+
+function handleJoinRequest()
+{
+    if (connectToDB()) {
+        $tuple = array(
+            ":bind1" => $_GET['BetID']
+        );
+        $allTuples = array($tuple);
+        printUserJoinUserPlacesBet(executeBoundSQL("SELECT g.username, g.accountbalance FROM generaluser g, userplacesbet usp WHERE g.username = usp.username AND usp.BetID = :bind1", $allTuples));
+        disconnectFromDB();
+    }
+}
+
+function printUserJoinUserPlacesBet($result)
+{
+    echo "<br>Name and accountBalance of all users who placed on betID = " . $_GET['BetID'] . "<br>";
+    echo "<table>";
+    echo "<tr><th>UserName</th><th>AccountBalance</th></tr>";
+    while ($row = oci_fetch_array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['ACCOUNTBALANCE'] . "</td></tr>";
+    }
+    echo "</table>";
 }
 
 
@@ -126,7 +157,7 @@ function printBets($result)
     echo "<table>";
     echo "<tr><th>BetID</th><th>BetType</th><th>UserName (Created By)</th></tr>";
     while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['BETTYPE'] . "</td><td>" . $row['USERNAME'] ."</td></tr>";
+        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['BETTYPE'] . "</td><td>" . $row['USERNAME'] . "</td></tr>";
     }
     echo "</table>";
 }
@@ -157,6 +188,19 @@ function displayBets()
     }
 }
 
+function betExists($betID) {
+    if (connectToDB()) {
+        if (oci_fetch_array(executePlainSQL('select 1 from Bet where betID =' . $betID), OCI_BOTH) !== false) {
+            return true;
+        } else {
+            echo "Bet with betID:" . $betID . " not found";
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 if (isset($_GET['DisplayCurrUsersRequest'])) {
     displayUsers();
 }
@@ -180,6 +224,12 @@ if (isset($_GET['DisplayCurrBets'])) {
 if (isset($_POST['DeleteUser'])) {
     handleDeleteUserRequest();
 }
+
+if (isset($_GET['DisplayJoin']) && betExists($_GET['BetID'])) {
+    handleJoinRequest();
+}
+
+
 
 ?>
 
