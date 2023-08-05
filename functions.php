@@ -65,8 +65,6 @@ See the sample code below for how this function is used */
     return $statement;
 }
 
-
-
 function disconnectFromDB()
 {
     global $global_db_conn;
