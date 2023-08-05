@@ -7,7 +7,7 @@
     <title>Home Page</title>
 </head>
 <body>
-<h1>NBA Betting (TEST)</h1>
+<h1>NBA Betting (TEST2)</h1>
 <p>Let's win some money!</p>
 <hr/>
 <h1>Sign up here</h1>
