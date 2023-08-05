@@ -104,7 +104,7 @@ function displayGames()
         INNER JOIN Team THome ON G.HomeTeamID = THome.TeamID
         INNER JOIN Team TAway ON G.AwayTeamID = TAway.TeamID;";
         
-        printGames(executePlainSQL("SELECT * FROM Game"));
+        printGames(executePlainSQL($command));
         disconnectFromDB();
     }
 }
