@@ -13,11 +13,14 @@
 <h1>Sign up here</h1>
 <form action="signup.php" method="post">
     <input type="submit" value="Click Here">
-    // <label for="username">Username:</label>
-    // <input type="text" id="newUsername" name="SignUpUsername" placeholder="Enter your username" required>
-    // <label for="email">Email:</label>
-    // <input type="email" id="newEmail" name="SignUpEmail" placeholder="Enter your email" required>
-    // <input type="submit" value="Submit" name="CreateNewUser">
+</form>
+<hr/>
+<form action= "" method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="newUsername" name="SignUpUsername" placeholder="Enter your username" required>
+    <label for="email">Email:</label>
+    <input type="email" id="newEmail" name="SignUpEmail" placeholder="Enter your email" required>
+    <input type="submit" value="Submit" name="CreateNewUser">
 </form>
 <hr/>
 <h1>Login here</h1>

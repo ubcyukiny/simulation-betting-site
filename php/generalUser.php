@@ -125,19 +125,28 @@ function printMoneyLineBets($result)
     echo "</table>";
 }
 
+function gameExists($gameID) {
+    if (connectToDB()) {
+        return (oci_fetch_array(executePlainSQL('select 1 from Game where gameID =' . $gameID), OCI_BOTH) !== false);
+    } else {
+        return false;
+    }
+}
 
 function handleCreateMoneyLineBetRequest()
 {
     global $global_db_conn;
-    if (connectToDB()) {
+    if (connectToDB() && gameExists($_POST['GameID'])) {
         // insert to bet table and moneyline table
         // For Bet table
+        // need to verify if gameID exists before adding it to bet table
         $tuple2 = array(
             ":bbind1" => $_POST['BetID'],
-            ":bbind2" => 'MoneyLine'
+            ":bbind2" => 'MoneyLine',
+            ":bbind3" => $_SESSION['userName']
         );
         $allTuples2 = array($tuple2);
-        executeBoundSQL("insert into Bet(BetID, BetType) values(:bbind1, :bbind2)", $allTuples2);
+        executeBoundSQL("insert into Bet(BetID, BetType, UserName) values(:bbind1, :bbind2, :bbind3)", $allTuples2);
 
         // For MoneyLine table
         $tuple = array(
@@ -154,6 +163,8 @@ function handleCreateMoneyLineBetRequest()
          values(:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $allTuples);
         oci_commit($global_db_conn);
         disconnectfromDB();
+    } else {
+        echo "Bet creation failed, you are not logged in or GameID not found";
     }
 }
 
