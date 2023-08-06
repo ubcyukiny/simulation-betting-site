@@ -86,23 +86,34 @@ input
 
 function printGames($result)
 {
-    //prints results from a select statement
+    // Fetch the number of rows returned by the query
+    $numRows = oci_num_rows($result);
+
+    if ($numRows === 0) {
+        echo "No games found.";
+        //return;
+    }
+
+    // Print the table header
     echo "<br>Retrieved data from table Game:<br>";
     echo "<table>";
     echo "<tr><th>GameID</th><th>Home Team</th><th>Away Team</th><th>ScoreHome</th><th>ScoreAway</th><th>GameDate</th></tr>";
 
-    $numRows = oci_num_rows($result);
-    if ($numRows > 0) {
-        while ($row = oci_fetch_array($result, OCI_ASSOC + OCI_NOCASE)) {
-            echo "<tr><td>" . $row['GAMEID'] . "</td><td>" . $row['HOMETEAMNAME'] . "</td><td>" . $row['AWAYTEAMNAME'] . "</td>
-            <td>" . $row['SCOREHOME'] . "</td><td>" . $row['SCOREAWAY'] . "</td><td>" . $row['GAMEDATE'] . "</td></tr>";
-        }
-    } else {
-        echo "<tr><td colspan='6'>No games found.</td></tr>";
+    // Print each row of the result
+    while (($row = oci_fetch_array($result, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+        echo "<tr>";
+        echo "<td>" . $row['GAMEID'] . "</td>";
+        echo "<td>" . $row['HOMETEAMNAME'] . "</td>";
+        echo "<td>" . $row['AWAYTEAMNAME'] . "</td>";
+        echo "<td>" . $row['SCOREHOME'] . "</td>";
+        echo "<td>" . $row['SCOREAWAY'] . "</td>";
+        echo "<td>" . $row['GAMEDATE'] . "</td>";
+        echo "</tr>";
     }
 
     echo "</table>";
 }
+
 
 
 
