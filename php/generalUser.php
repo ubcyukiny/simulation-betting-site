@@ -88,10 +88,10 @@ function printGames($result)
 { //prints results from a select statement
     echo "<br>Retrieved data from table Game:<br>";
     echo "<table>";
-    echo "<tr><th>GameID</th><th>ScoreHome</th><th>ScoreAway</th><th>GameDate</th><th>HomeTeamID</th><th>AwayTeamID</th></tr>";
+    echo "<tr><th>GameID</th><th>ScoreHome</th><th>ScoreAway</th><th>GameDate</th><th>HomeTeam</th><th>AwayTeam</th></tr>";
     while ($row = oci_fetch_array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row['GAMEID'] . "</td><td>" . $row['SCOREHOME'] . "</td><td>" . $row['SCOREAWAY'] . "</td>
-        <td>" . $row['GAMEDATE'] . "</td><td>" . $row['HOMETEAMID'] . "</td><td>" . $row['AWAYTEAMID'] . "</td></tr>";
+        <td>" . $row['GAMEDATE'] . "</td><td>" . $row['HOMETEAM'] . "</td><td>" . $row['AWAYTEAM'] . "</td></tr>";
     }
     echo "</table>";
 }
@@ -99,12 +99,14 @@ function printGames($result)
 function displayGames()
 {
     if (connectToDB()) {
-        printGames(executePlainSQL("SELECT * FROM Game"));
+        $command = "SELECT G.GameID, G.ScoreHome, G.ScoreAway, G.GameDate, THome.FullName AS HomeTeam, TAway.FullName AS AwayTeam
+        FROM Game G
+        INNER JOIN Team THome ON G.HomeTeamID = THome.TeamID
+        INNER JOIN Team TAway ON G.AwayTeamID = TAway.TeamID";
+        printGames(executePlainSQL($command));
         disconnectFromDB();
     }
 }
-
-
 
 function displayMoneyLineBets()
 {
