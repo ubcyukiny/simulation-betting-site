@@ -1,4 +1,4 @@
 <?php
 
-$glo_user = "username";
+$glo_user = "user";
 $glo_pass = "password";
