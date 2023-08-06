@@ -28,6 +28,11 @@ if (isset($_SESSION['userName'])) {
     <h1>Display games (for createBet)</h1>
     <p><input type="submit" value="Display Games" name="DisplayGames"></p>
 </form>
+<form method="GET" action="generalUser.php"> <!--refresh page when submitted-->
+    <p><input type="submit" value="Filter Games" name="FilterGames"></p>
+    <label for="TeamNameFilter">Enter Team Name:</label>
+    <p><input type="text" id="TeamNameFilter" name = "TeamNameFilter" required></p>
+</form>
 <hr/>
 <h1>Display current moneyline bets:</h1>
 <form action="generalUser.php" method="get">
@@ -72,18 +77,35 @@ if (isset($_SESSION['userName'])) {
 
 <?php
 
-function displayGames()
+function displayGames($args = null)
 {
     if (connectToDB()) {
-        $command = "SELECT G.GameID, THome.FullName AS HomeTeam, G.ScoreHome, G.ScoreAway, TAway.FullName AS AwayTeam, G.GameDate
-        FROM Game G
-        INNER JOIN Team THome ON G.HomeTeamID = THome.TeamID
-        INNER JOIN Team TAway ON G.AwayTeamID = TAway.TeamID";
-        $colNames = ["Game ID", "Home", "", "", "Away", "Date"];
-        printTable(executePlainSQL($command), $colNames);
+        if ($args == null) {
+            $command = "SELECT G.GameID, THome.FullName AS HomeTeam, G.ScoreHome, G.ScoreAway, TAway.FullName AS AwayTeam, G.GameDate
+            FROM Game G
+            INNER JOIN Team THome ON G.HomeTeamID = THome.TeamID
+            INNER JOIN Team TAway ON G.AwayTeamID = TAway.TeamID";
+            $colNames = ["Game ID", "Home", "", "", "Away", "Date"];
+            $result = executePlainSQL($command);
+        } else {
+            $tuple = array(
+                ":bind1" => $args,
+            );
+            $allTuples = array($tuple);
+            $command = "SELECT G.GameID, THome.FullName AS HomeTeam, G.ScoreHome, G.ScoreAway, TAway.FullName AS AwayTeam, G.GameDate
+            FROM Game G
+            INNER JOIN Team THome ON G.HomeTeamID = THome.TeamID
+            INNER JOIN Team TAway ON G.AwayTeamID = TAway.TeamID
+            WHERE THome.FullName IN (:bind1) OR TAway.FullName IN (:bind1)";
+            $colNames = ["Game ID", "Home", "", "", "Away", "Date"];
+            $result = executeBoundSQL($command, $allTuples);
+        }
+        
+        printTable($result, $colNames);
         disconnectFromDB();
     }
 }
+
 
 function displayMoneyLineBets()
 {
@@ -202,6 +224,10 @@ if (isset($_POST['Logout'])) {
 // if displayGame is pressed
 if (isset($_GET['DisplayGames'])) {
     displayGames();
+}
+
+if (isset($_GET['FilterGames'])) {
+    displayGames($_GET ['TeamNameFilter']);
 }
 
 // if submitBet is pressed
