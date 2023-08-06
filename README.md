@@ -11,6 +11,7 @@
 - **Delete Operation:** On cascade delete, admin can delete users; bets created or placed by that user should be deleted as well, any placement on deleted-user created bet will be removed as well
 - **Join:** Find name and accountBalance of all users who placed on a specific bet
 - **Nested Aggregation with GROUP BY:** Find the average amount bet on each game, but only consider games where the total amount bet is greater than $2000.<br><br>
+- **Aggregation with GROUP BY:** Calculate the maximum bet amount placed, grouped by users for display in the admin page. No user input is needed for this operation.<br><br>
 
 
 
@@ -19,7 +20,6 @@
     - Games before a certain date or total score > userInputValue
     - Bet with odds > some value, or bets with a userInputGameID (gameID)<br><br>
 - **Projection:** Perform projection on the moneylineBet table, selecting 3-4 attributes from (userName, BetID, betAmount, Prediction, CalculatedOdds).<br><br>
-- **Aggregation with GROUP BY:** Calculate the maximum bet amount placed, grouped by users for display in the admin page. No user input is needed for this operation.<br><br>
 - **Aggregation with HAVING:** Identify bets placed by more than one user, find the maximum bet amount placed, and group the results by user for display in the admin page. No user input is needed for this operation.<br><br>
 - **SQL Scripts:** Combine createTable and insert SQL scripts into a single runnable script. Add missing tables and data (at least 10 entries for each table), ensuring that the queries have non-trivial answers for aggregations and divisions.<br><br>
 - **Final Report:** Produce a PDF report including:
