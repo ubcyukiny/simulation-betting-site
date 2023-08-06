@@ -67,21 +67,10 @@
 
 include 'functions.php';
 
-function printUsers($result)
-{
-    echo "<br>Retrieved data from table generalUsers:<br>";
-    echo "<table>";
-    echo "<tr><th>UserName</th><th>AccountBalance</th><th>Email</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['ACCOUNTBALANCE'] . "</td><td>" . $row['EMAIL'] . "</td></tr>";
-    }
-    echo "</table>";
-}
-
 function displayUsers()
 {
     if (connectToDB()) {
-        printUsers(executePlainSQL("SELECT * FROM GeneralUser"));
+        printTable(executePlainSQL("SELECT * FROM GeneralUser"), ["Username", "Account Balance", "Email"]);
         disconnectFromDB();
     }
 }
@@ -132,50 +121,17 @@ function handleJoinRequest()
             ":bind1" => $_GET['BetID']
         );
         $allTuples = array($tuple);
-        printUserJoinUserPlacesBet(executeBoundSQL("SELECT g.username, g.accountbalance FROM generaluser g, userplacesbet usp WHERE g.username = usp.username AND usp.BetID = :bind1", $allTuples));
+        $cols = ["Username", "Account Balance"];
+        printTable(executeBoundSQL("SELECT g.username, g.accountbalance FROM generaluser g, userplacesbet usp WHERE g.username = usp.username AND usp.BetID = :bind1", $allTuples), $cols);
         disconnectFromDB();
     }
-}
-
-function printUserJoinUserPlacesBet($result)
-{
-    echo "<br>Name and accountBalance of all users who placed on betID = " . $_GET['BetID'] . "<br>";
-    echo "<table>";
-    echo "<tr><th>UserName</th><th>AccountBalance</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['ACCOUNTBALANCE'] . "</td></tr>";
-    }
-    echo "</table>";
-}
-
-
-function printUserPlacesBet($result)
-{
-    echo "<br>Retrieved data from table UserPlacesBet:<br>";
-    echo "<table>";
-    echo "<tr><th>UserName</th><th>BetID</th><th>BetAmount</th><th>Prediction</th><th>CalculatedOdds</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['BETID'] . "</td><td>" . $row['BETAMOUNT'] . "</td>
-        <td>" . $row['PREDICTION'] . "</td><td>" . $row['CALCULATEDODDS'] . "</td></tr>";
-    }
-    echo "</table>";
-}
-
-function printBets($result)
-{
-    echo "<br>Retrieved data from table Bet:<br>";
-    echo "<table>";
-    echo "<tr><th>BetID</th><th>GameID</th><th>BetType</th><th>Created By</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['GAMEID'] . "</td><td>" . $row['BETTYPE'] . "</td><td>" . $row['USERNAME'] . "</td></tr>";
-    }
-    echo "</table>";
 }
 
 function displayUserPlacesBet()
 {
     if (connectToDB()) {
-        printUserPlacesBet(executePlainSQL("SELECT * FROM UserPlacesBet"));
+        $cols = ["Username", "Bet ID", "Bet Amount", "Prediction", "Odds"];
+        printTable(executePlainSQL("SELECT * FROM UserPlacesBet"), $cols);
         disconnectFromDB();
     }
 }
@@ -185,7 +141,7 @@ function displayDivision()
 {
     if (connectToDB()) {
         $result = executePlainSQL("select * from GeneralUser g where not exists (select b.betID from Bet b where not exists (select usp.betID from UserPlacesBet usp where usp.betID = b.betID and usp.userName = g.userName))");
-        printUsers($result);
+        printTable($result, ["Username", "Account Balance", "Email"]);
         disconnectFromDB();
     }
 }
@@ -193,7 +149,8 @@ function displayDivision()
 function displayBets()
 {
     if (connectToDB()) {
-        printBets(executePlainSQL("SELECT * FROM Bet"));
+        $cols = ["Bet ID", "Game ID", "Bet Type", "Created By"];
+        printTable(executePlainSQL("SELECT * FROM Bet"), $cols);
         disconnectFromDB();
     }
 }
@@ -212,17 +169,6 @@ function betExists($betID)
     }
 }
 
-function printNestedAggregationResult($result)
-{
-    echo "<br>Average amount bet on games where the total amount bet is greater than 2000 dollars, grouped by gameID:<br>";
-    echo "<table>";
-    echo "<tr><th>GameID</th><th>BetAvg</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['GAMEID'] . "</td><td>" . $row['BETAVG'] . "</td></tr>";
-    }
-    echo "</table>";
-}
-
 function displayNestedAggregation()
 {
     if (connectToDB()) {
@@ -234,12 +180,12 @@ function displayNestedAggregation()
             group by b.gameID
             having sum(usp.betAmount) >= 2000
 	        ");
-        printNestedAggregationResult(executePlainSQL("
+        printTable(executePlainSQL("
         select temp.gameID, avg(usp.betAmount) as betAvg
         from userPlacesBet usp, bet b, temp
         where usp.betID = b.betID and b.gameID = temp.gameID
         group by temp.GameID
-        "));
+        "), ["Game ID", "Average"]);
         executePlainSQL("drop view temp");
         disconnectFromDB();
     }
@@ -248,23 +194,12 @@ function displayNestedAggregation()
 function DisplayAggregationWithGroupBy()
 {
     if (connectToDB()) {
-        printAggregationWithGroupBy(executePlainSQL("
+        printTable(executePlainSQL("
             select userName, max(betAmount) as maxBet
             from userPlacesBet
             group by userName
-        "));
+        "), ["Username", "Max Bet"]);
     }
-}
-
-function printAggregationWithGroupBy($result)
-{
-    echo "<br>Max betAmount of bet placed and grouped by users<br>";
-    echo "<table>";
-    echo "<tr><th>UserName</th><th>MaxBet</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['MAXBET'] . "</td></tr>";
-    }
-    echo "</table>";
 }
 
 if (isset($_GET['DisplayCurrUsersRequest'])) {
