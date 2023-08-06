@@ -32,17 +32,20 @@ CREATE TABLE Admin
     Email          VARCHAR(40) UNIQUE  NOT NULL
 );
 
---  made changes here, now store userName who created this bet, for on cascade delete
+--  made changes here, now store userName who created this bet, for on cascade delete, store gameID as FK
 CREATE TABLE Bet
 (
     BetID    INT PRIMARY KEY,
     BetType  VARCHAR(20) NOT NULL,
     UserName VARCHAR(20) NOT NULL,
+    GameID INT NOT NULL,
+    FOREIGN KEY (GameID) REFERENCES Game (GameID),
     FOREIGN KEY (UserName) REFERENCES GeneralUser (UserName) ON DELETE CASCADE
 );
 
 
 -- when the user place a bet, and that bet is deleted, the transaction will be deleted as well
+-- User can only place a bet ONCE
 CREATE TABLE UserPlacesBet
 (
     UserName       VARCHAR(20),
