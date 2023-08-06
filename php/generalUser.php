@@ -85,29 +85,59 @@ input
 <?php
 
 function printGames($result)
-{ //prints results from a select statement
+{
+    //prints results from a select statement
     echo "<br>Retrieved data from table Game:<br>";
     echo "<table>";
-    echo "<tr><th>GameID</th><th>ScoreHome</th><th>ScoreAway</th><th>GameDate</th><th>HomeTeamID</th><th>AwayTeamID</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['GAMEID'] . "</td><td>" . $row['SCOREHOME'] . "</td><td>" . $row['SCOREAWAY'] . "</td>
-        <td>" . $row['GAMEDATE'] . "</td><td>" . $row['HOMETEAMID'] . "</td><td>" . $row['AWAYTEAMID'] . "</td></tr>";
+    echo "<tr><th>GameID</th><th>Home Team</th><th>Away Team</th><th>ScoreHome</th><th>ScoreAway</th><th>GameDate</th></tr>";
+
+    $numRows = oci_num_rows($result);
+    if ($numRows > 0) {
+        while ($row = oci_fetch_array($result, OCI_ASSOC + OCI_NOCASE)) {
+            echo "<tr><td>" . $row['GAMEID'] . "</td><td>" . $row['HOMETEAMNAME'] . "</td><td>" . $row['AWAYTEAMNAME'] . "</td>
+            <td>" . $row['SCOREHOME'] . "</td><td>" . $row['SCOREAWAY'] . "</td><td>" . $row['GAMEDATE'] . "</td></tr>";
+        }
+    } else {
+        echo "<tr><td colspan='6'>No games found.</td></tr>";
     }
+
     echo "</table>";
 }
+
+
 
 function displayGames()
 {
     if (connectToDB()) {
-        $command = "SELECT G.GameID, G.ScoreHome, G.ScoreAway, G.GameDate, THome.FullName AS HomeTeam, TAway.FullName AS AwayTeam
-        FROM Game G
-        INNER JOIN Team THome ON G.HomeTeamID = THome.TeamID
-        INNER JOIN Team TAway ON G.AwayTeamID = TAway.TeamID";
-        
-        printGames(executePlainSQL($command));
+        $command = "SELECT
+        g.GameID,
+        th.FullName AS HomeTeamName,
+        ta.FullName AS AwayTeamName,
+        g.ScoreHome,
+        g.ScoreAway,
+        g.GameDate
+        FROM
+        Game g
+        JOIN
+        Team th ON g.HomeTeamID = th.TeamID
+        JOIN
+        Team ta ON g.AwayTeamID = ta.TeamID";
+
+        $result = executePlainSQL($command);
+
+        if (!$result) {
+            $e = OCI_Error($global_db_conn); // Fetch the error from the database connection
+            echo htmlentities($e['message']);
+        } else {
+            echo "Query executed successfully. Number of rows: " . oci_num_rows($result);
+            printGames($result);
+        }
+
         disconnectFromDB();
     }
 }
+
+
 
 function displayMoneyLineBets()
 {
