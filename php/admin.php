@@ -58,7 +58,11 @@
     <p><input type="submit" value="Display" name="DisplayNestedAggregationWithGroupBy"></p>
 </form>
 <hr/>
-
+<h1>Aggregation with group by: max betAmount of bet placed grouped by users</h1>
+<form action="admin.php" method="GET">
+    <p><input type="submit" value="Display" name="DisplayAggregationWithGroupBy"></p>
+</form>
+<hr/>
 <?php
 
 include 'functions.php';
@@ -241,6 +245,28 @@ function displayNestedAggregation()
     }
 }
 
+function DisplayAggregationWithGroupBy()
+{
+    if (connectToDB()) {
+        printAggregationWithGroupBy(executePlainSQL("
+            select userName, max(betAmount) as maxBet
+            from userPlacesBet
+            group by userName
+        "));
+    }
+}
+
+function printAggregationWithGroupBy($result)
+{
+    echo "<br>Max betAmount of bet placed and grouped by users<br>";
+    echo "<table>";
+    echo "<tr><th>UserName</th><th>MaxBet</th></tr>";
+    while ($row = oci_fetch_array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row['USERNAME'] . "</td><td>" . $row['MAXBET'] . "</td></tr>";
+    }
+    echo "</table>";
+}
+
 if (isset($_GET['DisplayCurrUsersRequest'])) {
     displayUsers();
 }
@@ -269,6 +295,9 @@ if (isset($_GET['DisplayJoin']) && betExists($_GET['BetID'])) {
     handleJoinRequest();
 }
 
+if (isset($_GET['DisplayAggregationWithGroupBy'])) {
+    displayAggregationWithGroupBy();
+}
 
 if (isset($_GET['DisplayNestedAggregationWithGroupBy'])) {
     displayNestedAggregation();

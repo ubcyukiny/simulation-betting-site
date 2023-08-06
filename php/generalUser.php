@@ -36,8 +36,6 @@ if (isset($_SESSION['userName'])) {
 <hr/>
 <h1>Place your bet here:</h1>
 <h1>You cannot place the same bet twice</h1>
-
-(Also we prob want a dropdown for user to select Home/Away for prediction)<br>
 <form action="generalUser.php" method="post">
     <label for="betId">Bet ID:</label>
     <input type="number" id="betId" name="BetID" required><br>
@@ -55,8 +53,6 @@ if (isset($_SESSION['userName'])) {
 <hr/>
 <h1>Create your bet here:</h1>
 <h1>Form for MoneyLine Bet</h1>
-Ideally, user only provides gameId and php get homeTeam and awayTeam from Game and Team table, for demo, require user to
-input
 <form action="generalUser.php" method="post">
     <label for="betId">Bet ID:</label>
     <input type="number" id="betId" name="BetID" required><br>
