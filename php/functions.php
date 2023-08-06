@@ -93,6 +93,7 @@ function disconnectFromDB()
 function printTable($result, $columnMapping = null)
 {
     echo "<table>";
+    echo "<br>Printing Table";
     
     // Print the table header based on column mapping
     if ($columnMapping) {
