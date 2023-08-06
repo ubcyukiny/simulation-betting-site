@@ -89,3 +89,38 @@ function disconnectFromDB()
     global $global_db_conn;
     oci_close($global_db_conn);
 }
+
+function printTable($result, $columnMapping = null)
+{
+    echo "<table>";
+    
+    // Print the table header based on column mapping
+    if ($columnMapping) {
+        echo "<tr>";
+        foreach ($columnMapping as $displayName) {
+            echo "<th>" . htmlentities($displayName, ENT_QUOTES) . "</th>";
+        }
+        echo "</tr>";
+        echo "<tr><td colspan='" . count($columnMapping) . "' style='border-bottom: 1px solid black;'></td></tr>";
+    } else {
+        // Print the default header titles
+        $defaultHeaders = oci_num_fields($result);
+        echo "<tr>";
+        for ($i = 1; $i <= $defaultHeaders; $i++) {
+            echo "<th>Column " . $i . "</th>";
+        }
+        echo "</tr>";
+        echo "<tr><td colspan='" . $defaultHeaders . "' style='border-bottom: 1px solid black;'></td></tr>";
+    }
+
+    while ($row = oci_fetch_array($result, OCI_ASSOC + OCI_RETURN_NULLS)) {
+        echo "<tr>";
+        // Print each column value
+        foreach ($row as $column => $value) {
+            echo "<td>" . ($value !== null ? htmlentities($value, ENT_QUOTES) : "") . "</td>";
+        }
+        echo "</tr>";
+    }
+
+    echo "</table>";
+}
