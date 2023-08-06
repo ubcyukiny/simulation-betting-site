@@ -100,7 +100,12 @@ function printGames($result)
 function displayGames()
 {
     if (connectToDB()) {
-        printGames(executePlainSQL("SELECT * FROM Game"));
+        $command = "SELECT G.GameID, G.ScoreHome, G.ScoreAway, G.GameDate, THome.FullName AS HomeTeam, TAway.FullName AS AwayTeam
+        FROM Game G
+        INNER JOIN Team THome ON G.HomeTeamID = THome.TeamID
+        INNER JOIN Team TAway ON G.AwayTeamID = TAway.TeamID";
+        
+        printGames(executePlainSQL($command));
         disconnectFromDB();
     }
 }
