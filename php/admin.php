@@ -52,6 +52,12 @@
     <p><input type="submit" value="Display" name="DisplayDivision"></p>
 </form>
 <hr/>
+<h1>Nested aggregation with group by: find the average amount bet on each game, but only in games where the total amount
+    bet is greater than 2000 dollars</h1>
+<form action="admin.php" method="GET">
+    <p><input type="submit" value="Display" name="DisplayNestedAggregationWithGroupBy"></p>
+</form>
+<hr/>
 
 <?php
 
@@ -155,9 +161,9 @@ function printBets($result)
 {
     echo "<br>Retrieved data from table Bet:<br>";
     echo "<table>";
-    echo "<tr><th>BetID</th><th>BetType</th><th>UserName (Created By)</th></tr>";
+    echo "<tr><th>BetID</th><th>GameID</th><th>BetType</th><th>Created By</th></tr>";
     while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['BETTYPE'] . "</td><td>" . $row['USERNAME'] . "</td></tr>";
+        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['GAMEID'] . "</td><td>" . $row['BETTYPE'] . "</td><td>" . $row['USERNAME'] . "</td></tr>";
     }
     echo "</table>";
 }
@@ -188,7 +194,8 @@ function displayBets()
     }
 }
 
-function betExists($betID) {
+function betExists($betID)
+{
     if (connectToDB()) {
         if (oci_fetch_array(executePlainSQL('select 1 from Bet where betID =' . $betID), OCI_BOTH) !== false) {
             return true;
@@ -198,6 +205,39 @@ function betExists($betID) {
         }
     } else {
         return false;
+    }
+}
+
+function printNestedAggregationResult($result)
+{
+    echo "<br>Average amount bet on games where the total amount bet is greater than 2000 dollars, grouped by gameID:<br>";
+    echo "<table>";
+    echo "<tr><th>GameID</th><th>BetAvg</th></tr>";
+    while ($row = oci_fetch_array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row['GAMEID'] . "</td><td>" . $row['BETAVG'] . "</td></tr>";
+    }
+    echo "</table>";
+}
+
+function displayNestedAggregation()
+{
+    if (connectToDB()) {
+        executePlainSQL("
+        create view temp(gameID, betTotal) as
+            select b.gameID, sum(usp.betAmount) as betTotal
+            from bet b, userPlacesBet usp
+            where b.betID = usp.betID
+            group by b.gameID
+            having sum(usp.betAmount) >= 2000
+	        ");
+        printNestedAggregationResult(executePlainSQL("
+        select temp.gameID, avg(usp.betAmount) as betAvg
+        from userPlacesBet usp, bet b, temp
+        where usp.betID = b.betID and b.gameID = temp.gameID
+        group by temp.GameID
+        "));
+        executePlainSQL("drop view temp");
+        disconnectFromDB();
     }
 }
 
@@ -230,6 +270,9 @@ if (isset($_GET['DisplayJoin']) && betExists($_GET['BetID'])) {
 }
 
 
+if (isset($_GET['DisplayNestedAggregationWithGroupBy'])) {
+    displayNestedAggregation();
+}
 
 ?>
 

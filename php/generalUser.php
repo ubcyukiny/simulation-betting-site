@@ -35,6 +35,7 @@ if (isset($_SESSION['userName'])) {
 </form>
 <hr/>
 <h1>Place your bet here:</h1>
+<h1>You cannot place the same bet twice</h1>
 (normally it would check if userBalance is enough for betAmount, then update user's accountBalance, ignore for demo)<br>
 (also normally it would also get CalculatedOdds based on your prediction and Bet, and insert to
 PotentialPayout table, but
@@ -142,11 +143,12 @@ function handleCreateMoneyLineBetRequest()
         // need to verify if gameID exists before adding it to bet table
         $tuple2 = array(
             ":bbind1" => $_POST['BetID'],
-            ":bbind2" => 'MoneyLine',
-            ":bbind3" => $_SESSION['userName']
+            ":bbind2" => $_POST['GameID'],
+            ":bbind3" => 'MoneyLine',
+            ":bbind4" => $_SESSION['userName']
         );
         $allTuples2 = array($tuple2);
-        executeBoundSQL("insert into Bet(BetID, BetType, UserName) values(:bbind1, :bbind2, :bbind3)", $allTuples2);
+        executeBoundSQL("insert into Bet(BetID, GameID, BetType, UserName) values(:bbind1, :bbind2, :bbind3, :bbind4)", $allTuples2);
 
         // For MoneyLine table
         $tuple = array(
