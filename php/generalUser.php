@@ -27,6 +27,8 @@ if (isset($_SESSION['userName'])) {
 <form method="GET" action="generalUser.php"> <!--refresh page when submitted-->
     <h1>Display games (for createBet)</h1>
     <p><input type="submit" value="Display Games" name="DisplayGames"></p>
+</form>
+<form method="GET" action="generalUser.php"> <!--refresh page when submitted-->
     <p><input type="submit" value="Filter Games" name="FilterGames"></p>
     <label for="TeamNameFilter">Enter Team Name:</label>
     <p><input type="text" id="TeamNameFilter" name = "TeamNameFilter" required></p>
