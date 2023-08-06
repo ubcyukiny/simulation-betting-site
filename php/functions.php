@@ -92,8 +92,6 @@ function disconnectFromDB()
 
 function printTable($result, $columnMapping = null)
 {
-    //prints results from a select statement
-    echo "<br>Retrieved data from table Game:<br>";
     echo "<table>";
     
     // Print the table header based on column mapping
@@ -104,6 +102,15 @@ function printTable($result, $columnMapping = null)
         }
         echo "</tr>";
         echo "<tr><td colspan='" . count($columnMapping) . "' style='border-bottom: 1px solid black;'></td></tr>";
+    } else {
+        // Print the default header titles
+        $defaultHeaders = oci_num_fields($result);
+        echo "<tr>";
+        for ($i = 1; $i <= $defaultHeaders; $i++) {
+            echo "<th>Column " . $i . "</th>";
+        }
+        echo "</tr>";
+        echo "<tr><td colspan='" . $defaultHeaders . "' style='border-bottom: 1px solid black;'></td></tr>";
     }
 
     while ($row = oci_fetch_array($result, OCI_ASSOC + OCI_RETURN_NULLS)) {

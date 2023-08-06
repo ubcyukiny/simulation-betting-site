@@ -100,23 +100,13 @@ function displayGames()
 function displayMoneyLineBets()
 {
     if (connectToDB()) {
-        printMoneyLineBets(executePlainSQL("SELECT * FROM MoneyLine"));
+        $command = "SELECT * FROM MoneyLine";
+        $cols = ["Bet ID", "Game ID", "Created BY", "Status", "Home Team", "Away Team", "Odds-Home", "Odds-Away"];
+        printTable(executePlainSQL($command), $cols);
         disconnectFromDB();
     }
 }
 
-function printMoneyLineBets($result)
-{
-    echo "<br>Retrieved data from table MoneyLine:<br>";
-    echo "<table>";
-    echo "<tr><th>BetID</th><th>GameID</th><th>UserName (Created by)</th><th>Status</th><th>HomeTeam</th><th>AwayTeam</th><th>HomeTeamOdds</th><th>AwayTeamOdds</th></tr>";
-    while ($row = oci_fetch_array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row['BETID'] . "</td><td>" . $row['GAMEID'] . "</td><td>" . $row['USERNAME'] . "</td>
-        <td>" . $row['STATUS'] . "</td><td>" . $row['HOMETEAM'] . "</td><td>" . $row['AWAYTEAM'] . "</td><td>"
-            . $row['HOMETEAMODDS'] . "</td><td>" . $row['AWAYTEAMODDS'] . "</td></tr>";
-    }
-    echo "</table>";
-}
 
 function gameExists($gameID) {
     if (connectToDB()) {
