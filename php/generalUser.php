@@ -35,7 +35,17 @@ if (isset($_SESSION['userName'])) {
 </form>
 <hr/>
 <h1>Display current moneyline bets:</h1>
-<form action="generalUser.php" method="get">
+<form action="generalUser.php" method="post">
+    <Label for="">Show:</label><br>
+    <select id="filterMoney" name = "filterMoney[]" size="7" multiple ><br>
+        <option value="BETID">Bet ID</option>
+        <option value="GAMEID">Game ID</option>
+        <option value="USERNAME" selected>Username</option>
+        <option value="HOMETEAM" selected>Home Team</option>
+        <option value="AWAYTEAM" selected>Away Team</option>
+        <option value="HOMETEAMODDS" selected>Home Team Odds</ption>
+        <option value="AWAYTEAMODDS" selected>Away Team Odds</option>
+    </select><br>
     <p><input type="submit" value="Display MoneyLine bets" name="DisplayAvailableBets"></p>
 </form>
 <hr/>
@@ -110,8 +120,12 @@ function displayGames($args = null)
 function displayMoneyLineBets()
 {
     if (connectToDB()) {
-        $command = "SELECT * FROM MoneyLine";
-        $cols = ["Bet ID", "Game ID", "Created BY", "Status", "Home Team", "Away Team", "Odds-Home", "Odds-Away"];
+        $filter = "";
+        foreach ( $_POST['filterMoney'] as $term ) { 
+            $filter .= $term . ", "; 
+          } 
+        echo $filter;
+        $command = "SELECT ". $filter ."Status FROM MoneyLine";
         printTable(executePlainSQL($command), $cols);
         disconnectFromDB();
     }
@@ -236,7 +250,7 @@ if (isset($_POST['CreateNewMoneyLineBet'])) {
 }
 
 // if displayBet is pressed
-if (isset($_GET['DisplayAvailableBets'])) {
+if (isset($_POST['DisplayAvailableBets'])) {
     displayMoneyLineBets();
 }
 
