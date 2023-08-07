@@ -63,6 +63,11 @@
     <p><input type="submit" value="Display" name="DisplayAggregationWithGroupBy"></p>
 </form>
 <hr/>
+<h1>Aggregation with having: find users who have placed bets with a total amount more than 500</h1>
+<form action="admin.php" method="GET">
+    <p><input type="submit" value="Display" name="DisplayAggregationWithHaving"></p>
+</form>
+<hr/>
 <?php
 
 include 'functions.php';
@@ -199,6 +204,20 @@ function DisplayAggregationWithGroupBy()
             from userPlacesBet
             group by userName
         "), ["Username", "Max Bet"]);
+        disconnectFromDB();
+    }
+}
+
+function displayAggregationWithHaving()
+{
+    if (connectToDB()) {
+        printTable(executePlainSQL("
+            select userName, sum(betAmount) as betTotal
+            from userPlacesBet
+            group by userName
+            having sum(betAmount) > 500
+        "), ["Username", "BetTotal"]);
+        disconnectFromDB();
     }
 }
 
@@ -238,6 +257,9 @@ if (isset($_GET['DisplayNestedAggregationWithGroupBy'])) {
     displayNestedAggregation();
 }
 
+if (isset($_GET['DisplayAggregationWithHaving'])) {
+    displayAggregationWithHaving();
+}
 ?>
 
 </body>
