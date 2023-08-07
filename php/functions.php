@@ -90,9 +90,49 @@ function disconnectFromDB()
     oci_close($global_db_conn);
 }
 
+function fieldFormatter($fieldName) {
+    $array = array(
+        "USERNAME" => "Username",
+        "BET ID" => "Bet ID",
+        "GAME ID" => "Game ID",
+        "PLAYER ID" => "Player ID",
+        "TEAM ID" => "Team ID",
+        "FULLNAME" => "Full Name",
+        "ADMINVIG" => "Admin Vig",
+        "ABBREVIATION" => "Abbr",
+        "MINUTES" => "Minutes",
+        "POINTS" => "Points",
+        "ASSISTS" => "Assists",
+        "REBOUNDS" => "Rebounds",
+        "SCOREHOME" => "Score Home",
+        "SCOREAWAY" => "Score Away",
+        "GAMEDATE" => "Game Date",
+        "HOMETEAMID" => "Home Team ID",
+        "AWAYTEAMID" => "Away Team ID",
+        "STATUS" => "Status",
+        "TOTALPOOL" => "Total Pool",
+        "TOTALVIG" => "Total Vig",
+        "SCOREDIFFERENCE" => "Score Difference",
+        "ODDS" => "Odds",
+        "TOTALSCORE" => "Total Score",
+        "HOMETEAM" => "Home Team",
+        "AWAYTEAM" => "Away Team",
+        "HOMETEAMODDS" => "Home Team Odds",
+        "AWAYTEAMODDS" => "Away Team Odds",
+        "CITY" => "City",
+        "TEAMID" => "Team ID",
+    );
+    if ($array[$fieldName] != null) {
+        return $array[$fieldName];
+    } else {
+        return $fieldName;
+    }
+}
+
 function printTable($result, $columnMapping = null)
 {
     echo "<table>";
+    echo "<br>Printing Table";
     
     // Print the table header based on column mapping
     if ($columnMapping) {
@@ -107,7 +147,7 @@ function printTable($result, $columnMapping = null)
         $defaultHeaders = oci_num_fields($result);
         echo "<tr>";
         for ($i = 1; $i <= $defaultHeaders; $i++) {
-            echo "<th>Column " . $i . "</th>";
+            echo "<th> " . fieldFormatter(oci_field_name($result, $i)) . "</th>";
         }
         echo "</tr>";
         echo "<tr><td colspan='" . $defaultHeaders . "' style='border-bottom: 1px solid black;'></td></tr>";

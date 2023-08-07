@@ -10,6 +10,21 @@
     <input type="submit" value="Display" name="DisplayCurrUsers">
 </form>
 <hr/>
+<h1>Admin Select</h1>
+<form method="GET" action="admin.php"> <!--refresh page when submitted-->
+    <label for="">SELECT</label>
+    <select id="tableOptions" name="tableOptions" required><br>
+        <option value="*" name="*">*</option>
+        <option value="*" name="*">*</option>
+    </select><br>
+    <label for="">FROM</label>
+    <select id="tableSelect" name="tableSelect" required><br>
+        <option value="GAME">Game</option>
+        <option value="TEAM">Team</option>
+    </select><br>
+    <p><input type="submit" value="AdminSelect" name="AdminSelect"></p>
+</form>
+<hr/>
 <h1>Lists of current Bets</h1>
 <form action="admin.php" method="GET">
     <p><input type="submit" value="Display" name="DisplayCurrBets"></p>
@@ -76,6 +91,16 @@ function displayUsers()
 {
     if (connectToDB()) {
         printTable(executePlainSQL("SELECT * FROM GeneralUser"), ["Username", "Account Balance", "Email"]);
+        disconnectFromDB();
+    }
+}
+
+function adminSelect() {
+    if (connectToDB()) {
+        $cols = null;
+        $command = "SELECT ".$_GET['tableOptions']." FROM ".$_GET['tableSelect'];
+        $result = executePlainSQL($command);
+        printTable($result);
         disconnectFromDB();
     }
 }
@@ -231,6 +256,10 @@ if (isset($_POST['UpdateUser']) && array_key_exists('updateUserRequest', $_POST)
 
 if (isset($_GET['DisplayUserPlacesBet'])) {
     displayUserPlacesBet();
+}
+
+if (isset($_GET['AdminSelect'])) {
+    adminSelect();
 }
 
 if (isset($_GET['DisplayDivision'])) {
