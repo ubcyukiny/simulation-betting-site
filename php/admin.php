@@ -13,12 +13,12 @@
 <h1>Admin Select</h1>
 <form method="GET" action="admin.php"> <!--refresh page when submitted-->
     <label for="">SELECT</label>
-    <select id="tableOptions" name="SELECT" required><br>
-        <option value="*">*</option>
-        <option value="*">*</option>
+    <select id="tableOptions" name="tableOptions" required><br>
+        <option value="*" name="*">*</option>
+        <option value="*" name="*">*</option>
     </select><br>
     <label for="">FROM</label>
-    <select id="tableSelect" name="FROM" required><br>
+    <select id="tableSelect" name="tableSelect" required><br>
         <option value="GAME">Game</option>
         <option value="TEAM">Team</option>
     </select><br>

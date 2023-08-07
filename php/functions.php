@@ -90,6 +90,19 @@ function disconnectFromDB()
     oci_close($global_db_conn);
 }
 
+function fieldFormatter($fieldName) {
+    $array = array(
+        "CITY" => "City",
+        "FULLNAME" => "Team Name",
+        "TEAMID" => "Team ID",
+    );
+    if ($array[$fieldName] != null) {
+        return $array[$fieldName];
+    } else {
+        return $fieldName;
+    }
+}
+
 function printTable($result, $columnMapping = null)
 {
     echo "<table>";
@@ -108,7 +121,7 @@ function printTable($result, $columnMapping = null)
         $defaultHeaders = oci_num_fields($result);
         echo "<tr>";
         for ($i = 1; $i <= $defaultHeaders; $i++) {
-            echo "<th>Column " . $i . "</th>";
+            echo "<th> " . fieldFormatter(oci_field_name($result, $i)) . "</th>";
         }
         echo "</tr>";
         echo "<tr><td colspan='" . $defaultHeaders . "' style='border-bottom: 1px solid black;'></td></tr>";
