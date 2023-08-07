@@ -13,6 +13,7 @@
 - **Nested Aggregation with GROUP BY:** Find the average amount bet on each game, but only consider games where the total amount bet is greater than $2000.<br><br>
 - **Aggregation with GROUP BY:** Calculate the maximum bet amount placed, grouped by users for display in the admin page. No user input is needed for this operation.<br><br>
 - **Aggregation with HAVING:** Find users who have placed bets with a total amount more than 500<br><br>
+- **Projection:** Perform projection on the moneylineBet table, selecting 3-4 attributes from (userName, BetID, betAmount, Prediction, CalculatedOdds).<br><br>
 
 
 
@@ -20,7 +21,6 @@
 - **Selection:** User must have the ability to choose which table and which attributes to select. At least 2 tables and 2 attributes to select. Selection conditions:
     - Games before a certain date or total score > userInputValue
     - Bet with odds > some value, or bets with a userInputGameID (gameID)<br><br>
-- **Projection:** Perform projection on the moneylineBet table, selecting 3-4 attributes from (userName, BetID, betAmount, Prediction, CalculatedOdds).<br><br>
 - **SQL Scripts:** Combine createTable and insert SQL scripts into a single runnable script. Add missing tables and data (at least 10 entries for each table), ensuring that the queries have non-trivial answers for aggregations and divisions.<br><br>
 - **Final Report:** Produce a PDF report including:
     - Description of the final project.
