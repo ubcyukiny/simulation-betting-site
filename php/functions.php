@@ -1,5 +1,3 @@
-
-<!-- Function used from PHP tutorial oracle_test.php -->
 <?php
 $global_success = True; //keep track of errors so it redirects the page only if there are no errors
 $global_db_conn = NULL; // edit the login credentials in connectToDB()
@@ -51,7 +49,7 @@ See the sample code below for how this function is used */
             //echo $val;
             //echo "<br>".$bind."<br>";
             oci_bind_by_name($statement, $bind, $val);
-            unset ($val); //make sure you do not remove this. Otherwise $val will remain in an array object wrapper which will not be recognized by Oracle as a proper datatype
+            unset($val); //make sure you do not remove this. Otherwise $val will remain in an array object wrapper which will not be recognized by Oracle as a proper datatype
         }
 
         $r = oci_execute($statement);
@@ -90,13 +88,14 @@ function disconnectFromDB()
     oci_close($global_db_conn);
 }
 
-function fieldFormatter($fieldName) {
+function fieldFormatter($fieldName)
+{
     $array = array(
         "USERNAME" => "Username",
-        "BET ID" => "Bet ID",
-        "GAME ID" => "Game ID",
-        "PLAYER ID" => "Player ID",
-        "TEAM ID" => "Team ID",
+        "BETID" => "Bet ID",
+        "GAMEID" => "Game ID",
+        "PLAYERID" => "Player ID",
+        "TEAMID" => "Team ID",
         "FULLNAME" => "Full Name",
         "ADMINVIG" => "Admin Vig",
         "ABBREVIATION" => "Abbr",
@@ -120,7 +119,9 @@ function fieldFormatter($fieldName) {
         "HOMETEAMODDS" => "Home Team Odds",
         "AWAYTEAMODDS" => "Away Team Odds",
         "CITY" => "City",
-        "TEAMID" => "Team ID",
+        "ACCOUNTBALANCE" => "Account Balance",
+        "EMAIL" => "Email",
+        "BETTYPE" => "Type",
     );
     if ($array[$fieldName] != null) {
         return $array[$fieldName];
@@ -133,7 +134,7 @@ function printTable($result, $columnMapping = null)
 {
     echo "<table>";
     echo "<br>Printing Table";
-    
+
     // Print the table header based on column mapping
     if ($columnMapping) {
         echo "<tr>";
