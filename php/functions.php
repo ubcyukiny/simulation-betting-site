@@ -88,14 +88,6 @@ function disconnectFromDB()
     oci_close($global_db_conn);
 }
 
-function printToConsole($data) {
-    $output = $data;
-    if (is_array($output))
-        $output = implode(',', $output);
-
-    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
-}
-
 function fieldFormatter($fieldName)
 {
     $array = array(

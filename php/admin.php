@@ -24,6 +24,7 @@
                     // Debug: Log the response status and text
                     console.log('Response Status:', xhr.status);
                     console.log('Response Text:', xhr.responseText);
+                    
 
                     if (xhr.status === 200) {
                         // Clear existing options
@@ -36,6 +37,7 @@
                             option.value = attributes[i];
                             option.text = attributes[i];
                             attributeOptions.appendChild(option);
+                            
                         }
                     } else {
                         console.log('Failed to fetch attributes.');
@@ -63,7 +65,7 @@
     </form>
     <hr />
     <h1>Admin Search</h1>
-    <form id="adminForm" method="POST" action="admin.php"> <!--refresh page when submitted-->
+    <form id="adminForm" method="GET" action="admin.php"> <!--refresh page when submitted-->
         <select id="tableFrom" name="tableFrom" required size="8">
             <option value="GeneralUser">GeneralUser</option>
             <option value="Bet">Bet</option>
@@ -74,7 +76,7 @@
             <option value="OverUnder">OverUnder</option>
             <option value="MoneyLine">MoneyLine</option>
         </select>
-        <select id="attributeOptions" name="attributeOptions" required multiple size="8">
+        <select id="attributeOptions" name="attributeOptions[]" required multiple size="8">
             <option value="" disabled selected>Select a table</option>
             <!-- Attributes will be dynamically populated based on table selection -->
         </select>
@@ -160,14 +162,13 @@
     function adminSearch()
     {
         if (connectToDB()) {
-            $selectedTable = $_POST['tableFrom'];
-            printToConsole($selectedTable);
+            $selectedTable = $_GET['tableFrom'];
+            $attributes = $_GET['attributeOptions'];
             $selectedAttributes = "";
-            foreach ($_POST['attributeOptions'] as $attribute) {
+            foreach ($attributes as $attribute) {
                 $selectedAttributes = $selectedAttributes . ", " . $attribute;
             }
-            $selectedAttributes = ltrim($selectedAttributes, ", ");
-            printToConsole($selectedAttributes);
+            $selectedAttributes = ltrim($selectedAttributes, ",");
             printTable(executePlainSQL("SELECT " . $selectedAttributes . " FROM " . $selectedTable));
             disconnectFromDB();
 
@@ -353,7 +354,7 @@
         displayAggregationWithHaving();
     }
 
-    if (isset($_POST['AdminSearch'])) {
+    if (isset($_GET['AdminSearch'])) {
         adminSearch();
     }
     ?>
