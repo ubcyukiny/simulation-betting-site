@@ -3,23 +3,7 @@
 <head>
     <title>304 Project</title>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('adminForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-                adminSearch();
-            });
-        });
 
-        function adminSearch() {
-            var selectedTable = document.getElementById('tableFrom').value;
-            var selectedAttributes = Array.from(document.getElementById('attributeOptions').selectedOptions)
-                .map(option => option.value);
-
-            // You can then use AJAX or any other method to send these values to the server for processing.
-            // For now, let's just log them for testing.
-            console.log('Selected Table:', selectedTable);
-            console.log('Selected Attributes:', selectedAttributes);
-        }
         // Function to update attributes dropdown based on the selected table
         function updateAttributes() {
             var selectedTable = document.getElementById('tableFrom').value;
@@ -62,8 +46,7 @@
             // Send the AJAX request
             xhr.send();
         }
-
-
+        
         // Bind the updateAttributes function to the change event of the table dropdown
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('tableFrom').addEventListener('change', updateAttributes);
@@ -80,7 +63,7 @@
     </form>
     <hr />
     <h1>Admin Search</h1>
-    <form id="adminForm" method="GET" action="admin.php"> <!--refresh page when submitted-->
+    <form id="adminForm" method="POST" action="admin.php"> <!--refresh page when submitted-->
         <select id="tableFrom" name="tableFrom" required size="8">
             <option value="GeneralUser">GeneralUser</option>
             <option value="Bet">Bet</option>
@@ -97,7 +80,7 @@
         </select>
         <br>
         <input type="hidden" id="AdminSearchRequest" name="AdminSearchRequest">
-        <input type="submit" value="Search" name="AdminSearch">
+        <input type="submit" value="Display" name="AdminSearch">
     </form>
     <?php
 
@@ -168,18 +151,26 @@
     function displayUsers()
     {
         if (connectToDB()) {
+            printToConsole("I tried");
             printTable(executePlainSQL("SELECT * FROM GeneralUser"), ["Username", "Account Balance", "Email"]);
             disconnectFromDB();
         }
     }
 
-    function adminSearch($tableName, $attribute)
+    function adminSearch()
     {
         if (connectToDB()) {
-            $selectedTable = $_GET['tableFrom'];
-            $selectedAttribute = implode(", ", $_GET['attributeOptions']);
-            printTable(executePlainSQL("SELECT " . $selectedAttribute . " FROM " . $selectedTable));
+            $selectedTable = $_POST['tableFrom'];
+            printToConsole($selectedTable);
+            $selectedAttributes = "";
+            foreach ($_POST['attributeOptions'] as $attribute) {
+                $selectedAttributes = $selectedAttributes . ", " . $attribute;
+            }
+            $selectedAttributes = ltrim($selectedAttributes, ", ");
+            printToConsole($selectedAttributes);
+            printTable(executePlainSQL("SELECT " . $selectedAttributes . " FROM " . $selectedTable));
             disconnectFromDB();
+
         }
     }
 
@@ -362,7 +353,7 @@
         displayAggregationWithHaving();
     }
 
-    if (isset($_GET['AdminSearchRequest'])) {
+    if (isset($_POST['AdminSearch'])) {
         adminSearch();
     }
     ?>

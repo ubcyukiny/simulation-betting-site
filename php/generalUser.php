@@ -128,7 +128,7 @@ if (isset($_SESSION['userName'])) {
             }
             echo $filter;
             $command = "SELECT " . $filter . "Status FROM MoneyLine";
-            printTable(executePlainSQL($command), $cols);
+            printTable(executePlainSQL($command));
             disconnectFromDB();
         }
     }

@@ -49,7 +49,7 @@ See the sample code below for how this function is used */
             //echo $val;
             //echo "<br>".$bind."<br>";
             oci_bind_by_name($statement, $bind, $val);
-            unset ($val); //make sure you do not remove this. Otherwise $val will remain in an array object wrapper which will not be recognized by Oracle as a proper datatype
+            unset($val); //make sure you do not remove this. Otherwise $val will remain in an array object wrapper which will not be recognized by Oracle as a proper datatype
         }
 
         $r = oci_execute($statement);
@@ -88,7 +88,16 @@ function disconnectFromDB()
     oci_close($global_db_conn);
 }
 
-function fieldFormatter($fieldName) {
+function printToConsole($data) {
+    $output = $data;
+    if (is_array($output))
+        $output = implode(',', $output);
+
+    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
+}
+
+function fieldFormatter($fieldName)
+{
     $array = array(
         "USERNAME" => "Username",
         "BET ID" => "Bet ID",
@@ -119,6 +128,8 @@ function fieldFormatter($fieldName) {
         "AWAYTEAMODDS" => "Away Team Odds",
         "CITY" => "City",
         "TEAMID" => "Team ID",
+        "ACCOUNTBALANCE" => "Account Balance",
+        "EMAIL" => "Email",
     );
     if ($array[$fieldName] != null) {
         return $array[$fieldName];
@@ -131,7 +142,7 @@ function printTable($result, $columnMapping = null)
 {
     echo "<table>";
     echo "<br>Printing Table";
-    
+
     // Print the table header based on column mapping
     if ($columnMapping) {
         echo "<tr>";
