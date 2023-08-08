@@ -1,5 +1,3 @@
-
-<!-- Function used from PHP tutorial oracle_test.php -->
 <?php
 $global_success = True; //keep track of errors so it redirects the page only if there are no errors
 $global_db_conn = NULL; // edit the login credentials in connectToDB()
