@@ -16,7 +16,6 @@ DROP TABLE Team;
 DROP TABLE GeneralUser;
 DROP TABLE Admin;
 
-
 CREATE TABLE GeneralUser
 (
     UserName       VARCHAR(20) PRIMARY KEY,
@@ -65,11 +64,12 @@ CREATE TABLE PotentialPayout
     PotentialPayout FLOAT NOT NULL
 );
 
+--Float is in %
 CREATE TABLE Certifies
 (
     UserName VARCHAR(20),
     BetID    INT,
-    AdminVig FLOAT NOT NULL,
+    AdminVig FLOAT NOT NULL, 
     PRIMARY KEY (UserName, BetID),
     FOREIGN KEY (UserName) REFERENCES Admin (UserName),
     FOREIGN KEY (BetID) REFERENCES Bet (BetID)
