@@ -132,8 +132,7 @@ function fieldFormatter($fieldName)
 
 function printTable($result, $columnMapping = null)
 {
-    echo "<table>";
-    echo "<br>Printing Table";
+    echo '<table class="result-table">';
 
     // Print the table header based on column mapping
     if ($columnMapping) {
@@ -162,6 +161,15 @@ function printTable($result, $columnMapping = null)
         }
         echo "</tr>";
     }
+    // For Bugfixing - from stackoverflow post https://stackoverflow.com/questions/4323411/how-can-i-write-to-the-console-in-php
+    function debug_to_console($data) {
+        $output = $data;
+        if (is_array($output))
+            $output = implode(',', $output);
+    
+        echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
+    }
+    
 
     echo "</table>";
 }

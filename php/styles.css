@@ -1,9 +1,25 @@
-/* styles.css */
-
 /* Apply flex display to arrange containers side by side */
 #adminSearchContainer, #tableContainer {
     display: flex;
+    width: 100%; /* Make containers take up full width */
 }
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+
+.result-table th, .result-table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+.result-table th {
+    background-color: #f0f0f0;
+}
+
 
 /* Set width for admin search container */
 #adminSearchContainer {
@@ -28,4 +44,3 @@
     padding: 5px;
     text-align: left;
 }
-
