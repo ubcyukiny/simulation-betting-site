@@ -1,0 +1,31 @@
+/* styles.css */
+
+/* Apply flex display to arrange containers side by side */
+#adminSearchContainer, #tableContainer {
+    display: flex;
+}
+
+/* Set width for admin search container */
+#adminSearchContainer {
+    flex: 1;
+    margin-right: 20px; /* Add some spacing between containers */
+}
+
+/* Set width for table container */
+#tableContainer {
+    flex: 2; /* Adjust width ratio as needed */
+}
+
+/* Style for printed table */
+#searchResults table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px; /* Add some spacing between form and table */
+}
+
+#searchResults th, #searchResults td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: left;
+}
+

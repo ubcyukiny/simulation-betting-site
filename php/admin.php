@@ -1,13 +1,16 @@
 <html>
+<link rel="stylesheet" type="text/css" href="styles.css">
 
 <head>
     <title>304 Project</title>
     <script>
-
         // Function to update attributes dropdown based on the selected table
         function updateAttributes() {
             var selectedTable = document.getElementById('tableFrom').value;
             var attributeOptions = document.getElementById('attributeOptions');
+
+            // Save the selected table in local storage
+            localStorage.setItem('selectedTable', selectedTable);
 
             // Create a new XMLHttpRequest object
             var xhr = new XMLHttpRequest();
@@ -24,7 +27,7 @@
                     // Debug: Log the response status and text
                     console.log('Response Status:', xhr.status);
                     console.log('Response Text:', xhr.responseText);
-                    
+
 
                     if (xhr.status === 200) {
                         // Clear existing options
@@ -37,7 +40,7 @@
                             option.value = attributes[i];
                             option.text = attributes[i];
                             attributeOptions.appendChild(option);
-                            
+
                         }
                     } else {
                         console.log('Failed to fetch attributes.');
@@ -48,10 +51,20 @@
             // Send the AJAX request
             xhr.send();
         }
-        
+
         // Bind the updateAttributes function to the change event of the table dropdown
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('tableFrom').addEventListener('change', updateAttributes);
+            var tableFrom = document.getElementById('tableFrom');
+            tableFrom.addEventListener('change', updateAttributes);
+
+            // Retrieve the selected table from local storage and set it as the selected value
+            var savedTable = localStorage.getItem('selectedTable');
+            if (savedTable) {
+                tableFrom.value = savedTable;
+            }
+
+            // Call the updateAttributes function to populate the attributeOptions
+            updateAttributes();
         });
     </script>
 </head>
@@ -65,25 +78,31 @@
     </form>
     <hr />
     <h1>Admin Search</h1>
-    <form id="adminForm" method="GET" action="admin.php"> <!--refresh page when submitted-->
-        <select id="tableFrom" name="tableFrom" required size="8">
-            <option value="GeneralUser">GeneralUser</option>
-            <option value="Bet">Bet</option>
-            <option value="Team">Team</option>
-            <option value="Player">Player</option>
-            <option value="Game">Game</option>
-            <option value="Spread">Spread</option>
-            <option value="OverUnder">OverUnder</option>
-            <option value="MoneyLine">MoneyLine</option>
-        </select>
-        <select id="attributeOptions" name="attributeOptions[]" required multiple size="8">
-            <option value="" disabled selected>Select a table</option>
-            <!-- Attributes will be dynamically populated based on table selection -->
-        </select>
-        <br>
-        <input type="hidden" id="AdminSearchRequest" name="AdminSearchRequest">
-        <input type="submit" value="Display" name="AdminSearch">
-    </form>
+    <div id="adminSearchContainer">
+        <form id="adminForm" method="POST" action="admin.php"> <!--refresh page when submitted-->
+            <select id="tableFrom" name="tableFrom" required size="8">
+                <option value="GeneralUser" selected>GeneralUser</option>
+                <option value="Bet">Bet</option>
+                <option value="Team">Team</option>
+                <option value="Player">Player</option>
+                <option value="Game">Game</option>
+                <option value="Spread">Spread</option>
+                <option value="OverUnder">OverUnder</option>
+                <option value="MoneyLine">MoneyLine</option>
+            </select>
+            <select id="attributeOptions" name="attributeOptions[]" required multiple size="8">
+                <option value="" disabled selected>Select a table</option>
+                <!-- Attributes will be dynamically populated based on table selection -->
+            </select>
+            <br>
+            <input type="hidden" id="AdminSearchRequest" name="AdminSearchRequest">
+            <input type="submit" value="Display" name="AdminSearch">
+        </form>
+    </div>
+    </div>
+    <div id="tableContainer">
+        <div id="searchResults"></div>
+    </div>
     <?php
 
     ?>
@@ -162,8 +181,8 @@
     function adminSearch()
     {
         if (connectToDB()) {
-            $selectedTable = $_GET['tableFrom'];
-            $attributes = $_GET['attributeOptions'];
+            $selectedTable = $_POST['tableFrom'];
+            $attributes = $_POST['attributeOptions'];
             $selectedAttributes = "";
             foreach ($attributes as $attribute) {
                 $selectedAttributes = $selectedAttributes . ", " . $attribute;
@@ -171,7 +190,6 @@
             $selectedAttributes = ltrim($selectedAttributes, ",");
             printTable(executePlainSQL("SELECT " . $selectedAttributes . " FROM " . $selectedTable));
             disconnectFromDB();
-
         }
     }
 
@@ -354,7 +372,7 @@
         displayAggregationWithHaving();
     }
 
-    if (isset($_GET['AdminSearch'])) {
+    if (isset($_POST['AdminSearch'])) {
         adminSearch();
     }
     ?>

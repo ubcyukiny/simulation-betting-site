@@ -92,10 +92,10 @@ function fieldFormatter($fieldName)
 {
     $array = array(
         "USERNAME" => "Username",
-        "BET ID" => "Bet ID",
-        "GAME ID" => "Game ID",
-        "PLAYER ID" => "Player ID",
-        "TEAM ID" => "Team ID",
+        "BETID" => "Bet ID",
+        "GAMEID" => "Game ID",
+        "PLAYERID" => "Player ID",
+        "TEAMID" => "Team ID",
         "FULLNAME" => "Full Name",
         "ADMINVIG" => "Admin Vig",
         "ABBREVIATION" => "Abbr",
@@ -119,9 +119,9 @@ function fieldFormatter($fieldName)
         "HOMETEAMODDS" => "Home Team Odds",
         "AWAYTEAMODDS" => "Away Team Odds",
         "CITY" => "City",
-        "TEAMID" => "Team ID",
         "ACCOUNTBALANCE" => "Account Balance",
         "EMAIL" => "Email",
+        "BETTYPE" => "Type",
     );
     if ($array[$fieldName] != null) {
         return $array[$fieldName];
