@@ -20,7 +20,7 @@ session_start();
                     echo "<div class='welcome-message'>Welcome, " . $_SESSION['userName'] . "</div>";
                     echo "<div class='account-balance'>Current Account Balance: " . $_SESSION['accountBalance'] . "</div>";
                     echo "<div class='email'>Email: " . $_SESSION['email'] . "</div>";
-                    echo '<form action="" method="post">';
+                    echo '<form action="main.php" method="post">';
                     echo '<input class="form-button logout-button" type="submit" value="Logout" name="Logout">';
                     echo '</form>';
                 } else {

@@ -42,10 +42,9 @@ body {
 .form-button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff;
+    background-color: #516173;
     color: #fff;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
 }
 
@@ -54,7 +53,7 @@ body {
     margin-bottom: 20px;
     padding: 15px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 0px;
     background-color: #f9f9f9;
 }
 
