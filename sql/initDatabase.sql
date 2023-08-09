@@ -1,81 +1,188 @@
+-- drop table with foreign keys and references first
+DROP TABLE UserPlacesBet;
+DROP TABLE PotentialPayout;
+DROP TABLE Spread;
+DROP TABLE OverUnder;
+DROP TABLE MoneyLine;
+DROP TABLE PlayerPlays;
+DROP TABLE TeamPlays;
+DROP TABLE Certifies;
+
+DROP TABLE Bet;
+DROP TABLE TeamAbbreviation;
+DROP TABLE Player;
+DROP TABLE Game;
+DROP TABLE Team;
+DROP TABLE GeneralUser;
+DROP TABLE Admin;
+
+CREATE TABLE GeneralUser
+(
+    UserName       VARCHAR(20) PRIMARY KEY,
+    AccountBalance INT DEFAULT 10000   NOT NULL,
+    Email          VARCHAR(40) UNIQUE NOT NULL
+);
+
+CREATE TABLE Admin
+(
+    UserName       VARCHAR(20) PRIMARY KEY,
+    AccountBalance INT DEFAULT 1000000 NOT NULL,
+    Email          VARCHAR(40) UNIQUE  NOT NULL
+);
+
+CREATE TABLE Team
+(
+    TeamID   INT PRIMARY KEY,
+    FullName VARCHAR(50),
+    City     VARCHAR(30)
+);
+
+CREATE TABLE Player
+(
+    PlayerID     INT PRIMARY KEY,
+    TeamID       INT NOT NULL,
+    InjuryStatus VARCHAR(50),
+    FOREIGN KEY (TeamID) REFERENCES Team (TeamID)
+);
+
+CREATE TABLE Game
+(
+    GameID     INT PRIMARY KEY,
+    ScoreHome  INT,
+    ScoreAway  INT,
+    GameDate   DATE,
+    HomeTeamID INT,
+    AwayTeamID INT
+);
+
+--  made changes here, now store userName who created this bet, for on cascade delete, store gameID as FK
+CREATE TABLE Bet
+(
+    BetID    INT PRIMARY KEY,
+    BetType  VARCHAR(20) NOT NULL,
+    UserName VARCHAR(20) NOT NULL,
+    GameID INT NOT NULL,
+    FOREIGN KEY (GameID) REFERENCES Game (GameID),
+    FOREIGN KEY (UserName) REFERENCES GeneralUser (UserName) ON DELETE CASCADE
+);
+
+-- when the user place a bet, and that bet is deleted, the transaction will be deleted as well
+-- User can only place a bet ONCE
+CREATE TABLE UserPlacesBet
+(
+    UserName       VARCHAR(20),
+    BetID          INT,
+    BetAmount      INT,
+    Prediction     VARCHAR(100),
+    CalculatedOdds FLOAT,
+    PRIMARY KEY (Username, BetID),
+    FOREIGN KEY (Username) REFERENCES GeneralUser (UserName) ON DELETE CASCADE,
+    FOREIGN KEY (BetID) REFERENCES Bet (BetID) ON DELETE CASCADE
+);
+
+-- changed Odds to int, potentialPayout to INT
+CREATE TABLE PotentialPayout
+(
+    BetAmount       INT NOT NULL,
+    InitialOdds     INT NOT NULL,
+    PotentialPayout INT NOT NULL
+);
+
+--Float is in %
+CREATE TABLE Certifies
+(
+    UserName VARCHAR(20),
+    BetID    INT,
+    AdminVig FLOAT NOT NULL,
+    PRIMARY KEY (UserName, BetID),
+    FOREIGN KEY (UserName) REFERENCES Admin (UserName),
+    FOREIGN KEY (BetID) REFERENCES Bet (BetID)
+);
+
+CREATE TABLE TeamAbbreviation
+(
+    FullName     VARCHAR(30),
+    Abbreviation VARCHAR(3)
+);
+
+CREATE TABLE TeamPlays
+(
+    GameID INT,
+    TeamID INT,
+    PRIMARY KEY (GameID, TeamID),
+    FOREIGN KEY (GameID) REFERENCES Game (GameID),
+    FOREIGN KEY (TeamID) REFERENCES Team (TeamID)
+);
+
+CREATE TABLE PlayerPlays
+(
+    PlayerID INT,
+    GameID   INT,
+    Minutes  INT,
+    Points   INT,
+    Assists  INT,
+    Rebounds INT,
+    PRIMARY KEY (PlayerID, GameID),
+    FOREIGN KEY (PlayerID) REFERENCES Player (PlayerID),
+    FOREIGN KEY (GameID) REFERENCES Game (GameID)
+);
+
+--  made changes here, betId references Bet
+CREATE TABLE Spread
+(
+    BetID           INT PRIMARY KEY,
+    GameID          INT         NOT NULL,
+    UserName        VARCHAR(20) NOT NULL,
+    Status          VARCHAR(40) DEFAULT 'Open',
+    TotalPool       INT,
+    TotalVig        INT,
+    ScoreDifference FLOAT,
+    Odds            FLOAT,
+    FOREIGN KEY (BetID) REFERENCES Bet (BetID),
+    FOREIGN KEY (GameID) REFERENCES Game (GameID),
+    FOREIGN KEY (UserName) REFERENCES GeneralUser (UserName)
+);
+
+--  made changes here, betId references Bet
+CREATE TABLE OverUnder
+(
+    BetID      INT PRIMARY KEY,
+    GameID     INT         NOT NULL,
+    UserName   VARCHAR(20) NOT NULL,
+    Status     VARCHAR(40) DEFAULT 'Open',
+    TotalPool  INT,
+    TotalVig   INT,
+    TotalScore INT,
+    Odds       FLOAT,
+    FOREIGN KEY (BetID) REFERENCES Bet (BetID),
+    FOREIGN KEY (GameID) REFERENCES Game (GameID),
+    FOREIGN KEY (UserName) REFERENCES GeneralUser (UserName)
+);
+
+
+--  made changes here, betId references Bet
+CREATE TABLE MoneyLine
+(
+    BetID        INT PRIMARY KEY,
+    GameID       INT         NOT NULL,
+    UserName     VARCHAR(20) NOT NULL,
+    Status       VARCHAR(40) DEFAULT 'Open',
+    HomeTeam     VARCHAR(40) NOT NULL,
+    AwayTeam     VARCHAR(40) NOT NULL,
+    HomeTeamOdds INT         NOT NULL,
+    AwayTeamOdds INT         NOT NULL,
+    FOREIGN KEY (BetID) REFERENCES Bet (BetID),
+    FOREIGN KEY (GameID) REFERENCES Game (GameID),
+    FOREIGN KEY (UserName) REFERENCES GeneralUser (UserName) ON DELETE CASCADE
+);
+
+-- insert
 -- GeneralUser
-INSERT INTO GeneralUser ("bobSmith", 1000, "bobSmith@gmail.com")
-INSERT INTO GeneralUser ("janeSmith", 2000,"janeSmith@gmail.com")
-INSERT INTO GeneralUser ("kevinMalone", 3000, "kevinMalone@gmail.com")
-INSERT INTO GeneralUser ("mikeScott", 3500, "bestBossEver@gmail.com")
-INSERT INTO GeneralUser ("dwightSchrute", 5000, "iLoveBeets@hotmail.com")
-INSERT INTO GeneralUser ("darrylBball", 4000, "Bball4Life@yahoo.com")
-INSERT INTO GeneralUser ("jimpBball", 4500, "JimBball@gmail.com")
-INSERT INTO GeneralUser ("pamBball", 300, "pamBball@hotmail.com")
-
--- Admin
-INSERT INTO GeneralUser ("admin1", 10000, "admin1@gmail.com")
-INSERT INTO GeneralUser ("admin2", 20000, "admin2@gmail.com")
-INSERT INTO GeneralUser ("admin3", 10000, "admin3@gmail.com")
-INSERT INTO GeneralUser ("admin4", 20000, "admin4@gmail.com")
-INSERT INTO GeneralUser ("admin5", 10000, "admin5@gmail.com")
-INSERT INTO GeneralUser ("admin6", 20000, "admin6@gmail.com")
-INSERT INTO GeneralUser ("admin7", 10000, "admin7@gmail.com")
-INSERT INTO GeneralUser ("admin8", 20000, "admin8@gmail.com")
-
--- Bet
--- BetID
--- begins with '1' = Spread
--- begins with '2' = OverUnder
--- begins with '3' = MoneyLine
-INSERT INTO Bet (1001, "Spread", "bobSmith", 0022200650)
-INSERT INTO Bet (1002, "Spread", "janeSmith", 0022200606)
-INSERT INTO Bet (2001, "OverUnder", "kevinMalone", 0022200623)
-INSERT INTO Bet (2002, "OverUnder", "mikeScott", 0022200623)
-INSERT INTO Bet (3001, "MoneyLine", "dwightSchrute", 0022200608)
-INSERT INTO Bet (3002, "MoneyLine", "darrylBball", 0022200608)
-
--- UserPlacesBet
--- bobSmith is betting that Chicago Bulls (homeTeam, favorite) will win by >=15 points for game 0022200650
-INSERT INTO UserPlacesBet ('bobSmith', 1001, 100, "Chicago Bulls -15")
--- janeSmith is betting that Chicago Bulls (awayTeam, not favorite) will lose by <=10 points for game 0022200606
-INSERT INTO UserPlacesBet ('janeSmith', 1002, 200, "Boston Celtics +10")
--- kevinMalone is betting that the total game points will be >250 for game 0022200623
-INSERT INTO UserPlacesBet ('kevinMalone', 2001, 400, "Over 250")
--- kevinMalone is betting that the total game points will be <250 for game 0022200623
-INSERT INTO UserPlacesBet ('mikeScott', 2002, 100, "Under 250")
--- dwightSchrute is betting that the Memphis grizzlies will win for game 0022200608, needs to bet $250 to win $100
-INSERT INTO UserPlacesBet ('dwightSchrute', 3001, 250, "Memphis Grizzlies -250")
--- dwightSchrute is betting that the Memphis grizzlies will win for game 0022200608, needs to bet $100 to win $300
-INSERT INTO UserPlacesBet ('darrylBball', 3002, 100, "San Antonio Spurs +300")
-
--- PotentialPayout
-
-
---Certifies
--- AdminVig is in %
-INSERT INTO Certifies ("admin1", 1001, 5)
-INSERT INTO Certifies ("admin2", 1002, 10)
-INSERT INTO Certifies ("admin3", 2001, 5)
-INSERT INTO Certifies ("admin4", 2002, 10.5)
-INSERT INTO Certifies ("admin5", 3001, 15)
-INSERT INTO Certifies ("admin6", 3002, 10)
-
--- Spread
--- Status is one of either 'Not Started', 'Live' or 'Game Over'
--- TotalVig is in $
-INSERT INTO Spread (1001, 0022200650, 'bobSmith', 'Game Over', 100, 5, 14, -15)
-INSERT INTO Spread (1002, 0022200606, 'janeSmith', 'Game Over', 200, 10, 8, +10)
-
--- OverUnder
-INSERT INTO OverUnder (2001, 0022200623, 'kevinMalone', 'Game Over', 500, 5, 264, 250)
-INSERT INTO OverUnder (2002, 0022200623, 'mikeScott', 'Game Over', 500, 10.5, 264, 250)
-
--- MoneyLine
-INSERT INTO MoneyLine (3001, 0022200608, 'dwightSchrute', 'Game Over', 'Memphis Grizzlies', 'San Antonio Spurs', 110, 130)
-INSERT INTO MoneyLine (3002, 0022200608, 'darrylBball', 'Game Over', 'Memphis Grizzlies', 'San Antonio Spurs', 110, 130)
-
--- Playerplays
-
--- Game
-INSERT INTO Game (GameID, ScoreHome, ScoreAway, GameDate, HomeTeamID, AwayTeamID)
-VALUES (0022200650, 132, 118, TO_DATE('2023-01-15', 'YYYY-MM-DD'), 1610612741, 1610612744);
-
+INSERT INTO GeneralUser (UserName, AccountBalance, Email) VALUES ('Ken', 15000, 'ken@test.com');
+INSERT INTO GeneralUser (UserName, AccountBalance, Email) VALUES ('Marmot', 11000, 'marmot@test.com');
+INSERT INTO GeneralUser (UserName, AccountBalance, Email) VALUES ('Marco', 12000, 'marco@test.com');
+INSERT INTO GeneralUser (UserName, AccountBalance, Email) VALUES ('Kelvin', 13000, 'kelvin@test.com');
+INSERT INTO GeneralUser (UserName, AccountBalance, Email) VALUES ('Andrew', 14000, 'andrew@test.com');
 
 -- Admin, NOT USED IN DEMO, NO WAY TO CREATE IN DEMO FOR NOW
 INSERT INTO Admin (UserName, AccountBalance, Email) VALUES ('Admin1', 1050000, 'admin1@test.com');
@@ -152,7 +259,7 @@ INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdd
 INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 6, 200, 'Home', -110);
 INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 7, 100, 'Home', +100);
 INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 8, 150, 'Away', -110);
-INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 9, 200, 'Home', -110;
+INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 9, 200, 'Home', -110);
 INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 10, 350, 'Home', +100);
 INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 11, 200, 'Over', -110);
 INSERT INTO UserPlacesBet (UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES ('Ken', 12, 100, 'Over', +100);
@@ -311,4 +418,3 @@ INSERT INTO MoneyLine (BetID, GameID, UserName, HomeTeam, AwayTeam, HomeTeamOdds
 INSERT INTO MoneyLine (BetID, GameID, UserName, HomeTeam, AwayTeam, HomeTeamOdds, AwayTeamOdds) VALUES (3, 0042200405, 'Ken', 'Denver Nuggets', 'Miami Heat', -120, +100);
 INSERT INTO MoneyLine (BetID, GameID, UserName, HomeTeam, AwayTeam, HomeTeamOdds, AwayTeamOdds) VALUES (4, 0022200623, 'Kelvin', 'Memphis Grizzlies', 'San Antonio Spurs', -105, -115);
 INSERT INTO MoneyLine (BetID, GameID, UserName, HomeTeam, AwayTeam, HomeTeamOdds, AwayTeamOdds) VALUES (5, 0022200608, 'Marco', 'Memphis Grizzlies', 'San Antonio Spurs', -110, +110);
-
