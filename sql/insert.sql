@@ -1,3 +1,77 @@
+-- GeneralUser
+INSERT INTO GeneralUser ("bobSmith", 1000, "bobSmith@gmail.com")
+INSERT INTO GeneralUser ("janeSmith", 2000,"janeSmith@gmail.com")
+INSERT INTO GeneralUser ("kevinMalone", 3000, "kevinMalone@gmail.com")
+INSERT INTO GeneralUser ("mikeScott", 3500, "bestBossEver@gmail.com")
+INSERT INTO GeneralUser ("dwightSchrute", 5000, "iLoveBeets@hotmail.com")
+INSERT INTO GeneralUser ("darrylBball", 4000, "Bball4Life@yahoo.com")
+INSERT INTO GeneralUser ("jimpBball", 4500, "JimBball@gmail.com")
+INSERT INTO GeneralUser ("pamBball", 300, "pamBball@hotmail.com")
+
+-- Admin
+INSERT INTO GeneralUser ("admin1", 10000, "admin1@gmail.com")
+INSERT INTO GeneralUser ("admin2", 20000, "admin2@gmail.com")
+INSERT INTO GeneralUser ("admin3", 10000, "admin3@gmail.com")
+INSERT INTO GeneralUser ("admin4", 20000, "admin4@gmail.com")
+INSERT INTO GeneralUser ("admin5", 10000, "admin5@gmail.com")
+INSERT INTO GeneralUser ("admin6", 20000, "admin6@gmail.com")
+INSERT INTO GeneralUser ("admin7", 10000, "admin7@gmail.com")
+INSERT INTO GeneralUser ("admin8", 20000, "admin8@gmail.com")
+
+-- Bet
+-- BetID
+-- begins with '1' = Spread
+-- begins with '2' = OverUnder
+-- begins with '3' = MoneyLine
+INSERT INTO Bet (1001, "Spread", "bobSmith", 0022200650)
+INSERT INTO Bet (1002, "Spread", "janeSmith", 0022200606)
+INSERT INTO Bet (2001, "OverUnder", "kevinMalone", 0022200623)
+INSERT INTO Bet (2002, "OverUnder", "mikeScott", 0022200623)
+INSERT INTO Bet (3001, "MoneyLine", "dwightSchrute", 0022200608)
+INSERT INTO Bet (3002, "MoneyLine", "darrylBball", 0022200608)
+
+-- UserPlacesBet
+-- bobSmith is betting that Chicago Bulls (homeTeam, favorite) will win by >=15 points for game 0022200650
+INSERT INTO UserPlacesBet ('bobSmith', 1001, 100, "Chicago Bulls -15")
+-- janeSmith is betting that Chicago Bulls (awayTeam, not favorite) will lose by <=10 points for game 0022200606
+INSERT INTO UserPlacesBet ('janeSmith', 1002, 200, "Boston Celtics +10")
+-- kevinMalone is betting that the total game points will be >250 for game 0022200623
+INSERT INTO UserPlacesBet ('kevinMalone', 2001, 400, "Over 250")
+-- kevinMalone is betting that the total game points will be <250 for game 0022200623
+INSERT INTO UserPlacesBet ('mikeScott', 2002, 100, "Under 250")
+-- dwightSchrute is betting that the Memphis grizzlies will win for game 0022200608, needs to bet $250 to win $100
+INSERT INTO UserPlacesBet ('dwightSchrute', 3001, 250, "Memphis Grizzlies -250")
+-- dwightSchrute is betting that the Memphis grizzlies will win for game 0022200608, needs to bet $100 to win $300
+INSERT INTO UserPlacesBet ('darrylBball', 3002, 100, "San Antonio Spurs +300")
+
+-- PotentialPayout
+
+
+--Certifies
+-- AdminVig is in %
+INSERT INTO Certifies ("admin1", 1001, 5)
+INSERT INTO Certifies ("admin2", 1002, 10)
+INSERT INTO Certifies ("admin3", 2001, 5)
+INSERT INTO Certifies ("admin4", 2002, 10.5)
+INSERT INTO Certifies ("admin5", 3001, 15)
+INSERT INTO Certifies ("admin6", 3002, 10)
+
+-- Spread
+-- Status is one of either 'Not Started', 'Live' or 'Game Over'
+-- TotalVig is in $
+INSERT INTO Spread (1001, 0022200650, 'bobSmith', 'Game Over', 100, 5, 14, -15)
+INSERT INTO Spread (1002, 0022200606, 'janeSmith', 'Game Over', 200, 10, 8, +10)
+
+-- OverUnder
+INSERT INTO OverUnder (2001, 0022200623, 'kevinMalone', 'Game Over', 500, 5, 264, 250)
+INSERT INTO OverUnder (2002, 0022200623, 'mikeScott', 'Game Over', 500, 10.5, 264, 250)
+
+-- MoneyLine
+INSERT INTO MoneyLine (3001, 0022200608, 'dwightSchrute', 'Game Over', 'Memphis Grizzlies', 'San Antonio Spurs', 110, 130)
+INSERT INTO MoneyLine (3002, 0022200608, 'darrylBball', 'Game Over', 'Memphis Grizzlies', 'San Antonio Spurs', 110, 130)
+
+-- Playerplays
+
 -- Game
 INSERT INTO Game (GameID, ScoreHome, ScoreAway, GameDate, HomeTeamID, AwayTeamID)
 VALUES (0022200650, 132, 118, TO_DATE('2023-01-15', 'YYYY-MM-DD'), 1610612741, 1610612744);
