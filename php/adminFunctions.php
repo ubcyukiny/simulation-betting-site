@@ -1,68 +1,18 @@
-<script>
-    // Function to update attributes dropdown based on the selected table
-    function updateAttributes() {
-        var selectedTable = document.getElementById('tableFrom').value;
-        console.log('Selected Table:', selectedTable); // Move this line here
-        var attributeOptions = document.getElementById('attributeOptions');
-        // Save the selected table in local storage
-        localStorage.setItem('selectedTable', selectedTable);
+<!DOCTYPE html>
+<html>
 
-        attributeOptions.innerHTML = '';
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
 
-        // Create a new XMLHttpRequest object
-        var xhr = new XMLHttpRequest();
-
-        // Configure the AJAX request
-        xhr.open('GET', 'get_attributes.php?table=' + encodeURIComponent(selectedTable), true);
-
-        // Define the callback function when the request completes
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    try {
-                        // Parse the response and add attributes to the dropdown
-                        var attributes = JSON.parse(xhr.responseText);
-                        for (var i = 0; i < attributes.length; i++) {
-                            var option = document.createElement('option');
-                            option.value = attributes[i];
-                            option.text = attributes[i];
-                            attributeOptions.appendChild(option);
-                        }
-                    } catch (error) {
-                        console.log('Failed to parse JSON response:', error);
-                    }
-                } else {
-                    console.log('Failed to fetch attributes.');
-                }
-            }
-        };
-
-        // Send the AJAX request
-        xhr.send();
-    }
-
-    // Bind the updateAttributes function to the change event of the table dropdown
-    document.addEventListener('DOMContentLoaded', function() {
-        var tableFrom = document.getElementById('tableFrom');
-        tableFrom.addEventListener('change', updateAttributes);
-
-        // Retrieve the selected table from local storage and set it as the selected value
-        var savedTable = localStorage.getItem('selectedTable');
-        if (savedTable) {
-            tableFrom.value = savedTable;
-        }
-
-        // Call the updateAttributes function to populate the attributeOptions
-        updateAttributes();
-    });
-</script>
 <?php
 include 'functions.php';
+
 function adminSearch()
 {
     if (connectToDB()) {
-        $selectedTable = $_POST['tableFrom'];
-        $attributes = $_POST['attributeOptions'];
+        $selectedTable = $_GET['tableFrom'];
+        $attributes = $_GET['attributeOptions'];
         $selectedAttributes = "";
         foreach ($attributes as $attribute) {
             $selectedAttributes = $selectedAttributes . ", " . $attribute;
@@ -72,14 +22,13 @@ function adminSearch()
         disconnectFromDB();
     }
 }
-if (isset($_POST['AdminSearch'])) {
+if (isset($_GET['AdminSearch'])) {
     adminSearch();
 }
 
 function displayUsers()
 {
     if (connectToDB()) {
-        printToConsole("I tried");
         printTable(executePlainSQL("SELECT * FROM GeneralUser"), ["Username", "Account Balance", "Email"]);
         disconnectFromDB();
     }
@@ -88,9 +37,9 @@ function displayUsers()
 function handleUpdateUserRequest()
 {
     global $global_db_conn;
-    $userName = $_POST['usernameToUpdate'];
-    $attributeToChange = $_POST['attributeToChange'];
-    $newValue = $_POST['newValue'];
+    $userName = $_GET['usernameToUpdate'];
+    $attributeToChange = $_GET['attributeToChange'];
+    $newValue = $_GET['newValue'];
     if (connectToDB()) {
         if (strcasecmp($attributeToChange, 'email') == 0) {
             if (filter_var($newValue, FILTER_VALIDATE_EMAIL)) {
@@ -113,7 +62,7 @@ function handleDeleteUserRequest()
     global $global_db_conn;
     if (connectToDB()) {
         $tuple = array(
-            ":bind1" => $_POST['UsernameToDelete']
+            ":bind1" => $_GET['UsernameToDelete']
         );
         $allTuples = array($tuple);
         executeBoundSQL("delete from GeneralUser where UserName=:bind1", $allTuples);
@@ -228,7 +177,7 @@ if (isset($_GET['DisplayCurrUsersRequest'])) {
     displayUsers();
 }
 
-if (isset($_POST['UpdateUser']) && array_key_exists('updateUserRequest', $_POST)) {
+if (isset($_GET['UpdateUser']) && array_key_exists('updateUserRequest', $_GET)) {
     handleUpdateUserRequest();
 }
 
@@ -244,7 +193,7 @@ if (isset($_GET['DisplayCurrBets'])) {
     displayBets();
 }
 
-if (isset($_POST['DeleteUser'])) {
+if (isset($_GET['DeleteUser'])) {
     handleDeleteUserRequest();
 }
 
