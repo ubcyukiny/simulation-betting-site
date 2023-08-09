@@ -1,6 +1,6 @@
 # project_a2o8f_d0o7w_o9j3b
 
-[Go to demo](https://www.students.cs.ubc.ca/~yukiny/main.php)
+[Go to demo](https://www.students.cs.ubc.ca/~black/main.php)
 
 ## Demo Checklist:
 
@@ -14,18 +14,18 @@
 - **Aggregation with GROUP BY:** Calculate the maximum bet amount placed, grouped by users for display in the admin page. No user input is needed for this operation.<br><br>
 - **Aggregation with HAVING:** Find users who have placed bets with a total amount more than 500<br><br>
 - **Projection:** Perform projection on the moneylineBet table, selecting 3-4 attributes from (userName, BetID, betAmount, Prediction, CalculatedOdds).<br><br>
-
-
-
-### TODO:
 - **Selection:** User must have the ability to choose which table and which attributes to select. At least 2 tables and 2 attributes to select. Selection conditions:
     - Games before a certain date or total score > userInputValue
     - Bet with odds > some value, or bets with a userInputGameID (gameID)<br><br>
 - **SQL Scripts:** Combine createTable and insert SQL scripts into a single runnable script. Add missing tables and data (at least 10 entries for each table), ensuring that the queries have non-trivial answers for aggregations and divisions.<br><br>
-- **Final Report:** Produce a PDF report including:
-    - Description of the final project.
-    - Differences in the final schema and explanations for these changes.
-    - A list of all SQL queries used in the project.
-    - Screenshots for required queries.
+
+
+### TODO:
+- **Session Issues:** Inconsistent login session when testing, need to look into
+
+- **Final Report:** what's left:
+    - Add remaining differences in the final schema and explanations for these changes.
+    - Update list of all SQL queries used in the project.
+    - Update screenshots for required queries using new Demo.
 
 
