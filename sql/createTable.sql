@@ -1,4 +1,4 @@
--- drop table with foreign keys and references first
+-- drop table with foreign keys and references first, total 15 tables
 DROP TABLE UserPlacesBet;
 DROP TABLE PotentialPayout;
 DROP TABLE Spread;
@@ -16,10 +16,11 @@ DROP TABLE Team;
 DROP TABLE GeneralUser;
 DROP TABLE Admin;
 
+
 CREATE TABLE GeneralUser
 (
     UserName       VARCHAR(20) PRIMARY KEY,
-    AccountBalance INT DEFAULT 1000   NOT NULL,
+    AccountBalance INT DEFAULT 10000   NOT NULL,
     Email          VARCHAR(40) UNIQUE NOT NULL
 );
 
@@ -29,6 +30,31 @@ CREATE TABLE Admin
     UserName       VARCHAR(20) PRIMARY KEY,
     AccountBalance INT DEFAULT 1000000 NOT NULL,
     Email          VARCHAR(40) UNIQUE  NOT NULL
+);
+
+CREATE TABLE Team
+(
+    TeamID   INT PRIMARY KEY,
+    FullName VARCHAR(50),
+    City     VARCHAR(30)
+);
+
+CREATE TABLE Player
+(
+    PlayerID     INT PRIMARY KEY,
+    TeamID       INT NOT NULL,
+    InjuryStatus VARCHAR(50),
+    FOREIGN KEY (TeamID) REFERENCES Team (TeamID)
+);
+
+CREATE TABLE Game
+(
+    GameID     INT PRIMARY KEY,
+    ScoreHome  INT,
+    ScoreAway  INT,
+    GameDate   DATE,
+    HomeTeamID INT,
+    AwayTeamID INT
 );
 
 --  made changes here, now store userName who created this bet, for on cascade delete, store gameID as FK
@@ -57,11 +83,12 @@ CREATE TABLE UserPlacesBet
     FOREIGN KEY (BetID) REFERENCES Bet (BetID) ON DELETE CASCADE
 );
 
+-- changed Odds to int, potentialPayout to INT
 CREATE TABLE PotentialPayout
 (
-    BetAmount       INT   NOT NULL,
-    InitialOdds     FLOAT NOT NULL,
-    PotentialPayout FLOAT NOT NULL
+    BetAmount       INT NOT NULL,
+    InitialOdds     INT NOT NULL,
+    PotentialPayout INT NOT NULL
 );
 
 --Float is in %
@@ -75,36 +102,10 @@ CREATE TABLE Certifies
     FOREIGN KEY (BetID) REFERENCES Bet (BetID)
 );
 
-CREATE TABLE Team
-(
-    TeamID   INT PRIMARY KEY,
-    FullName VARCHAR(50),
-    City     VARCHAR(30)
-);
-
 CREATE TABLE TeamAbbreviation
 (
     FullName     VARCHAR(30),
     Abbreviation VARCHAR(3)
-);
-
-CREATE TABLE Player
-(
-    PlayerID     INT PRIMARY KEY,
-    TeamID       INT NOT NULL,
-    InjuryStatus VARCHAR(50),
-    FOREIGN KEY (TeamID) REFERENCES Team (TeamID)
-);
-
-
-CREATE TABLE Game
-(
-    GameID     INT PRIMARY KEY,
-    ScoreHome  INT,
-    ScoreAway  INT,
-    GameDate   DATE,
-    HomeTeamID INT,
-    AwayTeamID INT
 );
 
 CREATE TABLE TeamPlays
@@ -129,31 +130,34 @@ CREATE TABLE PlayerPlays
     FOREIGN KEY (GameID) REFERENCES Game (GameID)
 );
 
-
+--  made changes here, betId references Bet
 CREATE TABLE Spread
 (
     BetID           INT PRIMARY KEY,
     GameID          INT         NOT NULL,
     UserName        VARCHAR(20) NOT NULL,
-    Status          VARCHAR(40),
+    Status          VARCHAR(40) DEFAULT 'Open',
     TotalPool       INT,
     TotalVig        INT,
     ScoreDifference FLOAT,
     Odds            FLOAT,
+    FOREIGN KEY (BetID) REFERENCES Bet (BetID),
     FOREIGN KEY (GameID) REFERENCES Game (GameID),
     FOREIGN KEY (UserName) REFERENCES GeneralUser (UserName)
 );
 
+--  made changes here, betId references Bet
 CREATE TABLE OverUnder
 (
     BetID      INT PRIMARY KEY,
     GameID     INT         NOT NULL,
     UserName   VARCHAR(20) NOT NULL,
-    Status     VARCHAR(40),
+    Status     VARCHAR(40) DEFAULT 'Open',
     TotalPool  INT,
     TotalVig   INT,
     TotalScore INT,
     Odds       FLOAT,
+    FOREIGN KEY (BetID) REFERENCES Bet (BetID),
     FOREIGN KEY (GameID) REFERENCES Game (GameID),
     FOREIGN KEY (UserName) REFERENCES GeneralUser (UserName)
 );
@@ -164,7 +168,7 @@ CREATE TABLE MoneyLine
     BetID        INT PRIMARY KEY,
     GameID       INT         NOT NULL,
     UserName     VARCHAR(20) NOT NULL,
-    Status       VARCHAR(40) DEFAULT 'OPEN',
+    Status       VARCHAR(40) DEFAULT 'Open',
     HomeTeam     VARCHAR(40) NOT NULL,
     AwayTeam     VARCHAR(40) NOT NULL,
     HomeTeamOdds INT         NOT NULL,
