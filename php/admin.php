@@ -7,109 +7,49 @@
 </head>
 
 <body>
-    <div style="display: flex;">
+    <div class="container">
         <!-- Left 1/3rd: Admin Search -->
-        <div class="container" style="width: 33%;">
-            <fieldset>
-                <legend>Admin Search</legend>
-                <div id="adminSearchContainer">
-                    <form id="adminForm" method="GET" action="adminFunctions.php" target="resultFrame">
-                        <select id="tableFrom" name="tableFrom" required size="8" onchange="updateAttributes()">
-                            <option value="GeneralUser" selected>GeneralUser</option>
-                            <option value="Bet">Bet</option>
-                            <option value="Team">Team</option>
-                            <option value="Player">Player</option>
-                            <option value="Game">Game</option>
-                            <option value="Spread">Spread</option>
-                            <option value="OverUnder">OverUnder</option>
-                            <option value="MoneyLine">MoneyLine</option>
-                        </select>
-                        <select id="attributeOptions" name="attributeOptions[]" required multiple size="8">
-                            <!-- Attribute options will be updated dynamically by JavaScript -->
-                        </select>
-                        <br>
-                        <br>
-                        <input type="hidden" id="AdminSearchRequest" name="AdminSearchRequest">
-                        <input type="submit" value="Display" name="AdminSearch">
+        <div class="left-column">
+            <div class="form-container">
+                <form id="adminForm" method="GET" action="functions.php" target="resultFrame">
+                    <select class="tableselect" id="tableFrom" name="tableFrom" required size="15" onchange="updateAttributes()">
+                        <!-- Attribute options will be updated dynamically by JavaScript -->
+                    </select>
+                    <select class="tableselect" id="attributeOptions" name="attributeOptions[]" size="8" required multiple>
+                        <!-- Attribute options will be updated by the tableAttributes js -->
+                    </select>
+                    <br>
+                    <br>
+                    <input type="hidden" id="AdminSearchRequest" name="AdminSearchRequest">
+                    <button class="form-button" type="submit" name="AdminSearch">Display</button>
+                </form>
+            </div>
+
+            <!-- Generated form items -->
+            <?php
+            $formItems = [
+                ["List of current users", "DisplayCurrUsersRequest"],
+                ["Lists of current Bets", "DisplayCurrBets"],
+                ["Transaction list of users placing on Bets", "DisplayUserPlacesBet"],
+                ["Division Operation: Find list of users that placed on every bet", "DisplayDivision"],
+                ["Nested aggregation with group by: find the average amount bet on each game, but only in games where the total amount bet is greater than 2000 dollars", "DisplayNestedAggregationWithGroupBy"],
+                ["Aggregation with group by: max betAmount of bet placed grouped by users", "DisplayAggregationWithGroupBy"],
+                ["Aggregation with having: find users who have placed bets with a total amount more than 500", "DisplayAggregationWithHaving"]
+            ];
+            ?>
+
+            <?php foreach ($formItems as $item) : ?>
+                <div class="form-container">
+                    <div class="form-header"><?php echo $item[0]; ?></div>
+                    <form method="GET" action="functions.php" target="resultFrame">
+                        <input type="hidden" name="<?php echo $item[1]; ?>">
+                        <button class="form-button" type="submit">Display</button>
                     </form>
                 </div>
-            </fieldset>
-            <fieldset>
-                <legend>List of current users</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <p><input type="submit" value="Display" name="DisplayCurrUsersRequest"></p>
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Lists of current Bets</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <p><input type="submit" value="Display" name="DisplayCurrBets"></p>
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Transaction list of users placing on Bets</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <p><input type="submit" value="Display" name="DisplayUserPlacesBet"></p>
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Update user email/accountBalance</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <input type="hidden" id="updateUserRequest" name="updateUserRequest">
-                    <label for="usernameToUpdate">Username of user to update:</label>
-                    <input type="text" id="usernameToUpdate" name="usernameToUpdate" placeholder="userName">
-                    <label for="attributeToChange">Enter attribute to Change:</label>
-                    <input type="text" id="attributeToChange" name="attributeToChange" placeholder="Enter Email/AccountBalance">
-                    <label for="newValue">Enter new value</label>
-                    <input type="text" id="newValue" name="newValue" placeholder="newValue">
-                    <input type="submit" value="Update User" name="UpdateUser">
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Delete users and bets created by that user, any placement of that bet will be deleted as well </legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <!--    should on cascade delete-->
-                    <label for="username">UserName to Delete:</label>
-                    <input type="text" id="usernameToDelete" name="UsernameToDelete">
-                    <input type="submit" value="Delete User" name="DeleteUser">
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Join: Find name and accountBalance of all users who placed on a specific bet</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <label for="betID">BetID:</label>
-                    <input type="number" id="betID" name="BetID" required>
-                    <p><input type="submit" value="Display" name="DisplayJoin"></p>
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Division Operation: Find list of users that placed on every bet</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <p><input type="submit" value="Display" name="DisplayDivision"></p>
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Nested aggregation with group by: find the average amount bet on each game, but only in games where the total amount
-                    bet is greater than 2000 dollars</legend>
-                    <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <p><input type="submit" value="Display" name="DisplayNestedAggregationWithGroupBy"></p>
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Aggregation with group by: max betAmount of bet placed grouped by users</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <p><input type="submit" value="Display" name="DisplayAggregationWithGroupBy"></p>
-                </form>
-            </fieldset>
-            <fieldset>
-                <legend>Aggregation with having: find users who have placed bets with a total amount more than 500</legend>
-                <form method="GET" action="adminFunctions.php" target="resultFrame">
-                    <p><input type="submit" value="Display" name="DisplayAggregationWithHaving"></p>
-                </form>
-            </fieldset>
+            <?php endforeach; ?>
         </div>
         <!-- Right 2/3rd: Functions -->
-        <div style="width: 66%; padding-left: 20px;">
+        <div class="right-column">
             <iframe id="resultFrame" name="resultFrame" style="border: none; width: 100%; height: 100%;"></iframe>
         </div>
     </div>
@@ -133,6 +73,22 @@
         'OverUnder': ['BetID', 'GameID', 'UserName', 'Status', 'TotalPool', 'TotalVig', 'TotalScore', 'Odds'],
         'MoneyLine': ['BetID', 'GameID', 'UserName', 'Status', 'HomeTeam', 'AwayTeam', 'HomeTeamOdds', 'AwayTeamOdds']
     };
+
+    // Function to populate the tableFrom options
+    function populateTableFromOptions() {
+        var tableFromSelect = document.getElementById("tableFrom");
+
+        tableFromSelect.innerHTML = "";
+        for (var table in tableAttributes) {
+            var option = document.createElement("option");
+            option.value = table;
+            option.text = table;
+            tableFromSelect.appendChild(option);
+        }
+    }
+
+    // Call the function to populate tableFrom options on page load
+    populateTableFromOptions();
 
     function updateAttributes() {
         var selectedTable = document.getElementById("tableFrom").value;

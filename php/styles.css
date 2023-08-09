@@ -1,16 +1,95 @@
-/* Apply flex display to arrange containers side by side */
-#adminSearchContainer, #tableContainer {
-    display: flex;
-    width: 100%; /* Make containers take up full width */
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+/* Apply general styling to body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Apply styling to the main container */
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Apply styling to the left column */
+.left-column {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply styling to the form elements */
+.tableselect {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Apply styling to form buttons */
+.form-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Apply styling to form containers */
+.form-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* Apply styling to form headers */
+.form-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Apply styling to the right column */
+.right-column {
+    flex: 2;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply styling to the iframe */
+#iframe {
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+/* Style for result table */
 .result-table {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #ccc;
 }
 
-.result-table th, .result-table td {
+.result-table th,
+.result-table td {
     padding: 8px;
     text-align: left;
     border: 1px solid #ccc;
@@ -18,29 +97,4 @@
 
 .result-table th {
     background-color: #f0f0f0;
-}
-
-
-/* Set width for admin search container */
-#adminSearchContainer {
-    flex: 1;
-    margin-right: 20px; /* Add some spacing between containers */
-}
-
-/* Set width for table container */
-#tableContainer {
-    flex: 2; /* Adjust width ratio as needed */
-}
-
-/* Style for printed table */
-#searchResults table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px; /* Add some spacing between form and table */
-}
-
-#searchResults th, #searchResults td {
-    border: 1px solid black;
-    padding: 5px;
-    text-align: left;
 }
