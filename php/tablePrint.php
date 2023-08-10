@@ -2,7 +2,6 @@
 <html>
 
 <head>
-    <title>304</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
@@ -11,8 +10,8 @@ include 'utilities.php';
 
 function printTable($result, $columnMapping = null)
 {
-    echo '<table class="result-table">';
 
+    echo '<table class="result-table">';
     // Print the table header based on column mapping
     if ($columnMapping) {
         echo "<tr>";
@@ -47,24 +46,22 @@ function printTable($result, $columnMapping = null)
     echo "</table>";
 }
 
-$action = key(array_filter($_POST, function ($value, $key) {
-    return isset($_POST[$key]);
-}, ARRAY_FILTER_USE_BOTH));
+$action = $_GET['print'];
 if (connectToDB()) {
     switch ($action) {
-        case 'tableFrom':
+        case 'adminSearch':
             adminSearch();
             break;
         case 'DisplayGames':
             displayGames();
             break;
         case 'FilterGames':
-            displayGames($_POST['TeamNameFilter']);
+            displayGames($_GET['TeamNameFilter']);
             break;
         case 'CreateNewMoneyLineBet':
             handleCreateMoneyLineBetRequest();
             break;
-        case 'DisplayAvailableBets':
+        case 'displayMoneyline':
             displayMoneyLineBets();
             break;
         case 'PlaceBet':
@@ -72,11 +69,6 @@ if (connectToDB()) {
             break;
         case 'DisplayCurrUsersRequest':
             displayUsers();
-            break;
-        case 'UpdateUser':
-            if (array_key_exists('updateUserRequest', $_POST)) {
-                handleUpdateUserRequest();
-            }
             break;
         case 'DisplayUserPlacesBet':
             displayUserPlacesBet();
@@ -87,12 +79,9 @@ if (connectToDB()) {
         case 'DisplayCurrBets':
             displayBets();
             break;
-        case 'DeleteUser':
-            handleDeleteUserRequest();
-            break;
         case 'DisplayJoin':
-            if (betExists($_POST['BetID'])) {
-                handleJoinRequest();
+            if (betExists($_GET['BetID'])) {
+                displayJoin();
             }
             break;
         case 'DisplayAggregationWithGroupBy':
@@ -101,32 +90,31 @@ if (connectToDB()) {
         case 'DisplayNestedAggregationWithGroupBy':
             displayNestedAggregation();
             break;
+        case 'DisplayAggregationWithHaving':
+            displayAggregationWithHaving();
+            break;
     }
     disconnectFromDB();
 }
 
 function adminSearch()
 {
-    $selectedTable = $_POST['tableFrom'];
-    $attributes = $_POST['attributeOptions'];
+    $selectedTable = $_GET['tableFrom'];
+    $attributes = $_GET['attributeOptions'];
 
+    $selectedAttributes = combinePost($attributes);
+    printTable(executePlainSQL("SELECT " . $selectedAttributes . " FROM " . $selectedTable));
+}
+
+function combinePost($attributes)
+{
     $selectedAttributes = "";
     foreach ($attributes as $attribute) {
         $selectedAttributes .= ", " . $attribute;
     }
     $selectedAttributes = ltrim($selectedAttributes, ",");
-    printTable(executePlainSQL("SELECT " . $selectedAttributes . " FROM " . $selectedTable));
+    return $selectedAttributes;
 }
-
-function debug_to_console($data)
-{
-    $output = $data;
-    if (is_array($output))
-        $output = implode(',', $output);
-
-    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
-}
-
 
 function displayUsers()
 {
@@ -134,42 +122,10 @@ function displayUsers()
     printTable(executePlainSQL("SELECT * FROM GeneralUser"), $colNames);
 }
 
-function handleUpdateUserRequest()
-{
-    global $global_db_conn;
-    $userName = $_POST['usernameToUpdate'];
-    $attributeToChange = $_POST['attributeToChange'];
-    $newValue = $_POST['newValue'];
-    if (strcasecmp($attributeToChange, 'email') == 0) {
-        if (filter_var($newValue, FILTER_VALIDATE_EMAIL)) {
-            executePlainSQL("UPDATE GeneralUser SET email='" . $newValue . "' WHERE username='" . $userName . "'");
-        } else {
-            echo "new email is not a valid email format";
-        }
-    } elseif (strcasecmp($attributeToChange, 'accountBalance') == 0) {
-        executePlainSQL("UPDATE GeneralUser SET accountBalance=" . $newValue . " WHERE username='" . $userName . "'");
-        echo "Update success!";
-    } else {
-        echo "Attribute does not exist, please try with email or accountBalance";
-    }
-    oci_commit($global_db_conn);
-}
-
-function handleDeleteUserRequest()
-{
-    global $global_db_conn;
-    $tuple = array(
-        ":bind1" => $_POST['UsernameToDelete']
-    );
-    $allTuples = array($tuple);
-    executeBoundSQL("DELETE FROM GeneralUser WHERE UserName=:bind1", $allTuples);
-    oci_commit($global_db_conn);
-}
-
-function handleJoinRequest()
+function displayJoin()
 {
     $tuple = array(
-        ":bind1" => $_POST['BetID']
+        ":bind1" => $_GET['BetID']
     );
     $allTuples = array($tuple);
     $cols = ["Username", "Account Balance"];
@@ -195,15 +151,7 @@ function displayBets()
     printTable(executePlainSQL("SELECT * FROM Bet"), $colNames);
 }
 
-function betExists($betID)
-{
-    if (oci_fetch_array(executePlainSQL('SELECT 1 FROM Bet WHERE betID =' . $betID), OCI_BOTH) !== false) {
-        return true;
-    } else {
-        echo "Bet with betID:" . $betID . " not found";
-        return false;
-    }
-}
+
 
 function displayNestedAggregation()
 {
@@ -277,99 +225,11 @@ function displayGames($args = null)
 
 function displayMoneyLineBets()
 {
-
-    $filter = implode(", ", $_POST['filterMoney']);
+    $filter = combinePost($_GET['filterMoney']);
     $command = "SELECT " . $filter . ", Status FROM MoneyLine";
+    debug_to_console($command);
     printTable(executePlainSQL($command));
 }
-
-function gameExists($gameID)
-{
-    return (oci_fetch_array(executePlainSQL('SELECT 1 FROM Game WHERE gameID =' . $gameID), OCI_BOTH) !== false);
-}
-
-function handleCreateMoneyLineBetRequest()
-{
-    global $global_db_conn;
-    if (connectToDB() && gameExists($_POST['GameID'])) {
-        // insert to bet table and moneyline table
-        // For Bet table
-        // need to verify if gameID exists before adding it to bet table
-        $tuple2 = array(
-            ":bbind1" => $_POST['BetID'],
-            ":bbind2" => $_POST['GameID'],
-            ":bbind3" => 'MoneyLine',
-            ":bbind4" => $_SESSION['userName']
-        );
-        $allTuples2 = array($tuple2);
-        executeBoundSQL("INSERT INTO Bet(BetID, GameID, BetType, UserName) VALUES(:bbind1, :bbind2, :bbind3, :bbind4)", $allTuples2);
-
-        $_gameID = $_POST['GameID'];
-        $_homeTeam = oci_fetch_array(executePlainSQL(
-            "
-            SELECT t.FullName 
-            FROM Team t, Game g
-            WHERE t.teamID = g.homeTeamID AND g.gameID =" . $_gameID
-        ))[0];
-        $_awayTeam = oci_fetch_array(executePlainSQL(
-            "
-            SELECT t.FullName 
-            FROM Team t, Game g
-            WHERE t.teamID = g.AwayTeamID AND g.gameID =" . $_gameID
-        ))[0];
-
-        // For MoneyLine table
-        $tuple = array(
-            ":bind1" => $_POST['BetID'],
-            ":bind2" => $_POST['GameID'],
-            ":bind3" => $_SESSION['userName'],
-            ":bind4" => $_homeTeam,
-            ":bind5" => $_awayTeam,
-            ":bind6" => $_POST['HomeTeamOdds'],
-            ":bind7" => $_POST['AwayTeamOdds'],
-        );
-        $allTuples = array($tuple);
-        executeBoundSQL("INSERT INTO MoneyLine(BetID, GameID, UserName, HomeTeam, AwayTeam, HomeTeamOdds, AwayTeamOdds)
-        VALUES(:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $allTuples);
-        oci_commit($global_db_conn);
-    } else {
-        echo "Bet creation failed, you are not logged in or GameID not found";
-    }
-    displayMoneyLineBets();
-}
-
-function handlePlaceBetRequest()
-{
-    global $global_db_conn;
-
-    // check user has enough balance, update session and generalUser table if yes
-    if ($_SESSION['accountBalance'] >= $_POST['BetAmount']) {
-        $_SESSION['accountBalance'] -= $_POST['BetAmount'];
-        executePlainSQL("UPDATE generalUser SET accountBalance =" . $_SESSION['accountBalance'] . " WHERE username ='" .  $_SESSION['userName'] . "'");
-    } else {
-        echo "Not enough balance";
-
-        return false;
-    }
-
-    // find odds based on prediction and betID
-    if ($_POST['Prediction'] == 'Home') {
-        echo "Home selected";
-        $_odds = oci_fetch_array(executePlainSQL("SELECT HomeTeamOdds FROM moneyline WHERE betID =" . $_POST['BetID']))[0];
-    } else {
-        echo "Away selected";
-        $_odds = oci_fetch_array(executePlainSQL("SELECT AwayTeamOdds FROM moneyline WHERE betID =" . $_POST['BetID']))[0];
-    }
-
-    $tuple = array(
-        ":bind1" => $_SESSION['userName'],
-        ":bind2" => $_POST['BetID'],
-        ":bind3" => $_POST['BetAmount'],
-        ":bind4" => $_POST['Prediction'],
-        ":bind5" => $_odds
-    );
-    $allTuples = array($tuple);
-    executeBoundSQL("INSERT INTO UserPlacesBet(UserName, BetID, BetAmount, Prediction, CalculatedOdds) VALUES(:bind1, :bind2, :bind3, :bind4, :bind5)", $allTuples);
-    oci_commit($global_db_conn);
-}
 ?>
+
+</html>

@@ -15,23 +15,21 @@ include 'utilities.php';
         <div class="left-column">
             <?php include 'userMenu.php'; ?>
             <div class="form-container">
-                <form method="POST" action="tablePrint.php" target="resultFrame">
+                <form method="GET" action="tablePrint.php" target="resultFrame">
                     <h1 class="section-title">Display games (for createBet)</h1>
-                    <p><input class="form-button" type="submit" value="Display Games" name="DisplayGames"></p>
+                    <p><input class="form-button" type="submit" value="DisplayGames" name="print"></p>
+                    <br>
                 </form>
-            </div>
-            <div class="form-container">
-
-                <form method="POST" action="generalUser.php">
-                    <p><input class="form-button" type="submit" value="Filter Games" name="FilterGames"></p>
+                <form method="GET" action="tablePrint.php" target="resultFrame">
                     <label for="TeamNameFilter">Enter Team Name:</label>
                     <p><input type="text" id="TeamNameFilter" name="TeamNameFilter" required></p>
+                    <br>
+                    <p><input class="form-button" type="submit" value="FilterGames" name="print"></p>
                 </form>
-
             </div>
             <div class="form-container">
                 <h1 class="section-title">Display current moneyline bets:</h1>
-                <form method="POST" action="tablePrint.php" target="resultFrame">
+                <form method="GET" action="tablePrint.php" target="resultFrame">
                     <label for="filterMoney">Show:</label><br>
                     <select id="filterMoney" name="filterMoney[]" size="7" multiple>
                         <option value="BETID">Bet ID</option>
@@ -42,13 +40,13 @@ include 'utilities.php';
                         <option value="HOMETEAMODDS" selected>Home Team Odds</option>
                         <option value="AWAYTEAMODDS" selected>Away Team Odds</option>
                     </select><br>
-                    <p><input class="form-button" type="submit" value="Display MoneyLine bets" name="DisplayAvailableBets"></p>
+                    <p><input class="form-button" type="submit" value="displayMoneyline" name="print"></p>
                 </form>
             </div>
             <div class="form-container">
                 <h1 class="section-title">Place your bet here:</h1>
                 <h1 class="section-subtitle">You cannot place the same bet twice</h1>
-                <form method="POST" action="tablePrint.php" target="resultFrame">
+                <form method="GET" action="tablePrint.php" target="resultFrame">
                     <label for="betId">Bet ID:</label>
                     <input type="number" id="betId" name="BetID" required><br>
 
@@ -68,7 +66,7 @@ include 'utilities.php';
 
                 <h1 class="section-title">Create your bet here:</h1>
                 <h1 class="section-subtitle">Form for MoneyLine Bet</h1>
-                <form method="POST" action="tablePrint.php" target="resultFrame">
+                <form method="GET" action="tablePrint.php" target="resultFrame">
                     <label for="betId">Bet ID:</label>
                     <input type="number" id="betId" name="BetID" required><br>
 
