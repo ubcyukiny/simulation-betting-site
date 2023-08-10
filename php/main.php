@@ -1,5 +1,5 @@
 <?php
-include 'functions.php';
+include 'utilities.php';
 session_start();
 ?>
 <html>
