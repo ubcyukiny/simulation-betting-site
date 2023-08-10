@@ -1,6 +1,5 @@
 <?php
 include 'utilities.php';
-session_start();
 ?>
 
 <!DOCTYPE html>
@@ -14,30 +13,16 @@ session_start();
 <body>
     <div class="container">
         <div class="left-column">
+            <?php include 'userMenu.php'; ?>
             <div class="form-container">
-                <?php
-                if (isset($_SESSION['userName'])) {
-                    echo "<div class='welcome-message'>Welcome, " . $_SESSION['userName'] . "</div>";
-                    echo "<div class='account-balance'>Current Account Balance: " . $_SESSION['accountBalance'] . "</div>";
-                    echo "<div class='email'>Email: " . $_SESSION['email'] . "</div>";
-                    echo '<form action="main.php" method="post">';
-                    echo '<input class="form-button logout-button" type="submit" value="Logout" name="Logout">';
-                    echo '</form>';
-                } else {
-                    echo "<div class='welcome-message'>Please log in.</div>";
-                    echo "<a href='main.php' class='login-link'>Back to Login Page</a>";
-                }
-                ?>
-            </div>
-            <div class="form-container">
-                <form method="GET" action="functions.php" target="resultFrame">
+                <form method="POST" action="tablePrint.php" target="resultFrame">
                     <h1 class="section-title">Display games (for createBet)</h1>
                     <p><input class="form-button" type="submit" value="Display Games" name="DisplayGames"></p>
                 </form>
             </div>
             <div class="form-container">
 
-                <form method="GET" action="generalUser.php">
+                <form method="POST" action="generalUser.php">
                     <p><input class="form-button" type="submit" value="Filter Games" name="FilterGames"></p>
                     <label for="TeamNameFilter">Enter Team Name:</label>
                     <p><input type="text" id="TeamNameFilter" name="TeamNameFilter" required></p>
@@ -46,7 +31,7 @@ session_start();
             </div>
             <div class="form-container">
                 <h1 class="section-title">Display current moneyline bets:</h1>
-                <form method="GET" action="functions.php" target="resultFrame">
+                <form method="POST" action="tablePrint.php" target="resultFrame">
                     <label for="filterMoney">Show:</label><br>
                     <select id="filterMoney" name="filterMoney[]" size="7" multiple>
                         <option value="BETID">Bet ID</option>
@@ -63,7 +48,7 @@ session_start();
             <div class="form-container">
                 <h1 class="section-title">Place your bet here:</h1>
                 <h1 class="section-subtitle">You cannot place the same bet twice</h1>
-                <form method="GET" action="functions.php" target="resultFrame">
+                <form method="POST" action="tablePrint.php" target="resultFrame">
                     <label for="betId">Bet ID:</label>
                     <input type="number" id="betId" name="BetID" required><br>
 
@@ -83,7 +68,7 @@ session_start();
 
                 <h1 class="section-title">Create your bet here:</h1>
                 <h1 class="section-subtitle">Form for MoneyLine Bet</h1>
-                <form method="GET" action="functions.php" target="resultFrame">
+                <form method="POST" action="tablePrint.php" target="resultFrame">
                     <label for="betId">Bet ID:</label>
                     <input type="number" id="betId" name="BetID" required><br>
 

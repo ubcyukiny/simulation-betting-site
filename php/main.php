@@ -1,6 +1,5 @@
 <?php
 include 'utilities.php';
-session_start();
 ?>
 <html>
 
@@ -12,10 +11,6 @@ session_start();
     <h1>NBA Betting</h1>
     <p>Let's win some money!</p>
     <hr />
-    <h1>Sign up here</h1>
-    <form action="signup.php" method="post">
-        <input type="submit" value="Click Here">
-    </form>
     <hr />
     <form action="" method="post">
         <label for="username">Username:</label>

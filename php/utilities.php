@@ -2,6 +2,8 @@
 $global_success = True; //keep track of errors so it redirects the page only if there are no errors
 $global_db_conn = NULL; // edit the login credentials in connectToDB()
 
+session_start();
+
 function connectToDB()
 {
     global $global_db_conn;
@@ -128,49 +130,3 @@ function fieldFormatter($fieldName)
         return $fieldName;
     }
 }
-
-function printTable($result, $columnMapping = null)
-{
-    echo '<table class="result-table">';
-
-    // Print the table header based on column mapping
-    if ($columnMapping) {
-        echo "<tr>";
-        foreach ($columnMapping as $displayName) {
-            echo "<th>" . htmlentities($displayName, ENT_QUOTES) . "</th>";
-        }
-        echo "</tr>";
-        echo "<tr><td colspan='" . count($columnMapping) . "' style='border-bottom: 1px solid black;'></td></tr>";
-    } else {
-        // Print the default header titles
-        $defaultHeaders = oci_num_fields($result);
-        echo "<tr>";
-        for ($i = 1; $i <= $defaultHeaders; $i++) {
-            echo "<th> " . fieldFormatter(oci_field_name($result, $i)) . "</th>";
-        }
-        echo "</tr>";
-        echo "<tr><td colspan='" . $defaultHeaders . "' style='border-bottom: 1px solid black;'></td></tr>";
-    }
-
-    while ($row = oci_fetch_array($result, OCI_ASSOC + OCI_RETURN_NULLS)) {
-        echo "<tr>";
-        // Print each column value
-        foreach ($row as $column => $value) {
-            echo "<td>" . ($value !== null ? htmlentities($value, ENT_QUOTES) : "") . "</td>";
-        }
-        echo "</tr>";
-    }
-    // For Bugfixing - from stackoverflow post https://stackoverflow.com/questions/4323411/how-can-i-write-to-the-console-in-php
-
-    
-
-    echo "</table>";
-} 
-function debug_to_console($data) {
-    $output = $data;
-    if (is_array($output))
-        $output = implode(',', $output);
-
-    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
-}
-?>
