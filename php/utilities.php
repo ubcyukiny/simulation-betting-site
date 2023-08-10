@@ -181,16 +181,11 @@ function handleDeleteUserRequest()
 {
     global $global_db_conn;
     $tuple = array(
-        ":bind1" => $_GET['UsernameToDelete']
+        ":bind1" => $_GET['selectedUser']
     );
     $allTuples = array($tuple);
     executeBoundSQL("DELETE FROM GeneralUser WHERE UserName=:bind1", $allTuples);
     oci_commit($global_db_conn);
-}
-
-if (isset($_GET['UserNameToDelete'])) {
-    handleDeleteUserRequest();
-    displayUsers();
 }
 
 function betExists($betID)
