@@ -1,4 +1,4 @@
-# project_a2o8f_d0o7w_o9j3b
+# Simulation Betting Site
 
 [Go to demo](https://www.students.cs.ubc.ca/~black/main.php)
 
